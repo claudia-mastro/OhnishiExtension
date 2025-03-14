@@ -701,19 +701,19 @@ for(s in 2:mcmc_samples){
         Sig0 <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W0, Sigma[[R[[s]][ij]]], ij)
         theta0 <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig0)
         Y0[ij] <- rnorm(n = 1,
-                      mean = mu[[s]][k] + theta0[ij],
-                      sd = sqrt(sig2[[s]][k]))
+                      mean = mu[[s]][R[[s]][ij]] + theta0[ij],
+                      sd = sqrt(sig2[[s]][R[[s]][ij]]))
         Sig1 <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W1, Sigma[[R[[s]][ij]]], ij)
         theta1 <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig1)
         Y1[ij] <- rnorm(n = 1,
-                      mean = mu[[s]][k] + theta1[ij],
-                      sd = sqrt(sig2[[s]][k]))
+                      mean = mu[[s]][R[[s]][ij]] + theta1[ij],
+                      sd = sqrt(sig2[[s]][R[[s]][ij]]))
 
         Sig0p <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W0p, Sigma[[R[[s]][ij]]], ij)
         theta0p <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig0p)
         Y0p[ij] <- rnorm(n = 1,
-                       mean = mu[[s]][k] + theta0p[ij],
-                       sd = sqrt(sig2[[s]][k]))
+                       mean = mu[[s]][R[[s]][ij]] + theta0p[ij],
+                       sd = sqrt(sig2[[s]][R[[s]][ij]]))
       }
     }
   }
