@@ -640,7 +640,7 @@ for(s in 2:mcmc_samples){
                    (calcRa(sum(N), rep(6, sum(N)), h4, l5, h6, l6)==2 & D_long==0) |
                    (calcRa(sum(N), rep(6, sum(N)), h4, l5, h6, l6)==3 & D_long==Z_long))
   
-  numer <- dnorm(Y_mat, mean=mu[[s]]-theta[[s]], sd=sqrt(sig_mat)) * D_mat * Pi
+  numer <- dnorm(Y_mat, mean=mu[[s]]-theta[[s]], sd=sqrt(sig_mat), log=T) + log(D_mat) + log(Pi)
   
   probs <- sapply(c(1:6), function(k) 1.00/rowSums(exp(numer - numer[,k])))
   probs[is.na(probs) == 1]<-0.00
