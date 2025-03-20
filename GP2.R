@@ -275,6 +275,7 @@ for(s in 2:mcmc_samples){
   sig2R_inv <- diag(1.00/sig2[[s-1]][R[[s-1]]])
   theta[[s]] <- theta[[s-1]]
   mu[[s]] <- mu[[s-1]]
+  sig2[[s]] <- sig2[[s-1]]
   for (k in 1:6) {
     ## THETA
     IR1 <- diag(R[[s-1]]==k)
@@ -304,6 +305,8 @@ for(s in 2:mcmc_samples){
     sig_b <- sig_priorb + 1/2*crossprod(Y_star3)
     
     sig2[[s]][k] <- rinvgamma(1, sig_a, sig_b)
+    sig2R <- diag(sig2[[s]][R[[s-1]]])
+    sig2R_inv <- diag(1.00/sig2[[s]][R[[s-1]]])
     
     ## PSI2
     psi_a <- psi_priora + sum(N)/2
