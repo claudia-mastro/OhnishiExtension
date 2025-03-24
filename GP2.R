@@ -336,16 +336,16 @@ for(s in 2:mcmc_samples){
         uni_draw <- runif(n = 1, min = 0.00, max = 1.00)
         if(is.na(ratio)) {
           print("PHI")
-          saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-          saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-          saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-          saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-          saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-          saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-          saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-          saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-          saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-          saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
+          saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+          saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+          saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+          saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+          saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+          saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+          saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+          saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+          saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+          saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
         }
         if(ratio > uni_draw){
           Sigma[[k]] <- Sig_new
@@ -379,18 +379,18 @@ for(s in 2:mcmc_samples){
           print("GAMMA")
           print(denom)
           print(numer)
-          saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-          saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-          saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-          saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-          saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-          saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-          saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-          saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-          saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-          saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
-          saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/gamma.rds")
-          saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/Pi.rds")
+          saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+          saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+          saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+          saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+          saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+          saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+          saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+          saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+          saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+          saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
+          saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/gamma.rds")
+          saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/Pi.rds")
         }
         if(ratio > uni_draw){
           Pi <- Pi_new
@@ -471,16 +471,16 @@ for(s in 2:mcmc_samples){
                     max = 1.00)
     if(is.na(ratio)) {
       print("H4")   
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
+      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
     }
     
     if(ratio > uni_draw){
@@ -515,16 +515,16 @@ for(s in 2:mcmc_samples){
                       max = 1.00)
     if(is.na(ratio)) {
       print("L5")    
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
+      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
     }
     
     if(ratio > uni_draw){
@@ -559,16 +559,16 @@ for(s in 2:mcmc_samples){
                       max = 1.00)
     if(is.na(ratio)) {
       print("H6")
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
+      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
     }
     if(ratio > uni_draw){
       logit_h6[[s]][R[[s-1]]==k] <- logit_h6_new
@@ -602,16 +602,16 @@ for(s in 2:mcmc_samples){
                       max = 1.00)
     if(is.na(ratio)) {
       print("L6")
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
+      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
     }
     
     if(ratio > uni_draw){
@@ -640,19 +640,19 @@ for(s in 2:mcmc_samples){
                    (calcRa(sum(N), rep(6, sum(N)), h4, l5, h6, l6)==2 & D_long==0) |
                    (calcRa(sum(N), rep(6, sum(N)), h4, l5, h6, l6)==3 & D_long==Z_long))
   
-  numer <- dnorm(Y_mat, mean=mu[[s]]-theta[[s]], sd=sqrt(sig_mat), log=T) + log(D_mat) + log(Pi)
+  numer <- dnorm(Y_mat, mean=mu[[s]]+theta[[s]], sd=sqrt(sig_mat), log=T) + log(D_mat) + log(Pi)
   
   probs <- sapply(c(1:6), function(k) 1.00/rowSums(exp(numer - numer[,k])))
   probs[is.na(probs) == 1]<-0.00
   
-  R[[s]]<-sapply(c(1:sum(N)), 
+  R[[s]]<-sapply(c(1:sum(N)),
                  function(idx){
-                   sample(c(1:6), 
-                          size = 1, 
+                   sample(c(1:6),
+                          size = 1,
                           prob = probs[idx,],
                           replace = TRUE)
                  })
-  
+
   ##########
   #Estimands
   ##########
@@ -731,35 +731,35 @@ for(s in 2:mcmc_samples){
   CASE[s] <- sum(C*(Y0-Y0p), na.rm=TRUE)/sum(C)
   
   if (s %in% c(1000, 2000, 4000, 5000, 6000, 7000, 8000, 9000, 10000)){
-    write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/CADE_CASE.csv")
-    saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-    saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-    saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-    saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-    saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-    saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-    saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-    saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-    saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-    saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
-    saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/gamma.rds")
-    saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/Pi.rds")
+    write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/CADE_CASE.csv")
+    saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+    saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+    saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+    saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+    saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+    saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+    saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+    saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+    saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+    saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
+    saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/gamma.rds")
+    saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/Pi.rds")
   }
 }
 
-write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/CADE_CASE.csv")
-saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/theta.rds")
-saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/sig2.rds")
-saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/mu.rds")
-saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/R.rds")
-saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/phi.rds")
-saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/psi2.rds")
-saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h4.rds")
-saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l5.rds")
-saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/h6.rds")
-saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/l6.rds")
-saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/gamma.rds")
-saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.14/Pi.rds")
+write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/CADE_CASE.csv")
+saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
+saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
+saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
+saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
+saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
+saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
+saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
+saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
+saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
+saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
+saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/gamma.rds")
+saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/Pi.rds")
 
 
 
