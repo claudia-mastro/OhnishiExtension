@@ -82,19 +82,19 @@ v_long<-q_long
 ################
 #True Parameters
 ################
-alpha_true<-matrix(NA,
+gamma_true<-matrix(NA,
                    nrow = 6,
                    ncol = 2)
 for(k in 1:5){
-  alpha_true[k,]<-rnorm(n = 2)
+  gamma_true[k,]<-rnorm(n = 2)
 }
-alpha_true[6,]<-0.00
+gamma_true[6,]<-0.00
 
 pi_mat_temp<-matrix(NA,
                     nrow = sum(N),
                     ncol = 6)
 for(k in 1:6){
-  pi_mat_temp[,k]<-exp(q_long%*%alpha_true[k,])
+  pi_mat_temp[,k]<-exp(q_long%*%gamma_true[k,])
 }
 pi_mat<-matrix(NA,
                nrow = sum(N),
@@ -103,17 +103,17 @@ for(k in 1:6){
   pi_mat[,k]<-pi_mat_temp[,k]/rowSums(pi_mat_temp)
 }
 
-G_long_true<-rep(NA,
+R_long_true<-rep(NA,
                  times = sum(N))
 for(j in 1:sum(N)){
-  G_long_true[j]<-sample(c(1:6),
+  R_long_true[j]<-sample(c(1:6),
                          size = 1,
                          prob = pi_mat[j,])
 }
-G_true<-list(0)
-G_true[[1]]<-G_long_true[1:N[1]]
+R_true<-list(0)
+R_true[[1]]<-R_long_true[1:N[1]]
 for(j in 2:J){
-  G_true[[j]]<-G_long_true[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
+  R_true[[j]]<-R_long_true[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
 }
 
 delta_h4_true <- rnorm(n = 2)
@@ -146,15 +146,15 @@ logit_l6_true<-rnorm(n = sum(N),
 l6_true<-(h6_true + exp(logit_l6_true))/(1.00 + exp(logit_l6_true))
 
 
-G_a_long_true<-rep(NA,
+R_a_long_true<-rep(NA,
                    times = sum(N))
-G_a_long_true[(G_long_true == 1) | ((G_long_true == 5) & (a_long >= l5_true)) | ((G_long_true == 6) & (a_long >= l6_true))]<-1
-G_a_long_true[(G_long_true == 2) | ((G_long_true == 4) & (a_long < h4_true)) | ((G_long_true == 6) & (a_long < h6_true))]<-2
-G_a_long_true[(G_long_true == 3) | ((G_long_true == 4) & (a_long >= h4_true)) | ((G_long_true == 5) & (a_long < l5_true)) | ((G_long_true == 6 & a_long) >= (h6_true & a_long < l6_true))]<-3
-G_a_true<-list(0)
-G_a_true[[1]]<-G_a_long_true[1:N[1]]
+R_a_long_true[(R_long_true == 1) | ((R_long_true == 5) & (a_long >= l5_true)) | ((R_long_true == 6) & (a_long >= l6_true))]<-1
+R_a_long_true[(R_long_true == 2) | ((R_long_true == 4) & (a_long < h4_true)) | ((R_long_true == 6) & (a_long < h6_true))]<-2
+R_a_long_true[(R_long_true == 3) | ((R_long_true == 4) & (a_long >= h4_true)) | ((R_long_true == 5) & (a_long < l5_true)) | ((R_long_true == 6 & a_long) >= (h6_true & a_long < l6_true))]<-3
+R_a_true<-list(0)
+R_a_true[[1]]<-R_a_long_true[1:N[1]]
 for(j in 2:J){
-  G_a_true[[j]]<-G_a_long_true[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
+  R_a_true[[j]]<-R_a_long_true[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
 }
 
 D<-list(0)
@@ -164,9 +164,9 @@ for(j in 1:J){
   
   D[[j]]<-rep(NA,
               times = N[j])
-  D[[j]][G_a_true[[j]] == 1]<-1
-  D[[j]][G_a_true[[j]] == 2]<-0
-  D[[j]][G_a_true[[j]] == 3]<-Z[[j]][G_a_true[[j]] == 3]
+  D[[j]][R_a_true[[j]] == 1]<-1
+  D[[j]][R_a_true[[j]] == 2]<-0
+  D[[j]][R_a_true[[j]] == 3]<-Z[[j]][R_a_true[[j]] == 3]
   S[j]<-sum(D[[j]])
   
 }
@@ -212,8 +212,8 @@ mu_true <- rnorm(6, 0, sd=4)
 sigma2_true <- runif(6)
 
 Y_long <- rmnorm(1,
-                 mu_true[G_long_true] + theta_true[cbind(seq_along(G_long_true), G_long_true)],
-                 varcov=diag(sigma2_true[G_long_true]))
+                 mu_true[R_long_true] + theta_true[cbind(seq_along(R_long_true), R_long_true)],
+                 varcov=diag(sigma2_true[R_long_true]))
 
 Y<-list(0)
 Y[[1]]<-Y_long[1:N[1]]
@@ -231,66 +231,66 @@ eff.s <- 0.4
 eff.sp <- 0.8
 
 for(j in 1:sum(N)) {
-  if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
+  if (a_long[j] == eff.a & S_long[j] == eff.s & R_a_long_true[j] == 3) {
     CADE.G[j] <- 3
     if (Z_long[j] == 0) {
       Y0_long[j] <- Y_long[j]
-      W1 <- W_true[[G_long_true[j]]]
+      W1 <- W_true[[R_long_true[j]]]
       W1[j,2] <- eff.s
       W1[j,3] <- eff.a
       W1[j,4] <- 1
-      Sig1 <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W1)
-      theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig1)
+      Sig1 <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W1)
+      theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig1)
       Y1_long[j] <- rnorm(n = 1,
-                      mean = mu_true[G_long_true[j]] + theta1[j],
-                      sd = sigma2_true[G_long_true[j]]) 
+                      mean = mu_true[R_long_true[j]] + theta1[j],
+                      sd = sigma2_true[R_long_true[j]]) 
 
-      W0p <- W_true[[G_long_true[j]]]
+      W0p <- W_true[[R_long_true[j]]]
       W0p[j,2] <- eff.sp
       W0p[j,3] <- eff.a
       W0p[j,4] <- 0
-      Sig0p <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W0p) 
-      theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0p)
+      Sig0p <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W0p) 
+      theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0p)
       Y0p_long[j] <- rnorm(n = 1,
-                       mean = mu_true[G_long_true[j]] + theta0p[j],
-                       sd = sigma2_true[G_long_true[j]])     
+                       mean = mu_true[R_long_true[j]] + theta0p[j],
+                       sd = sigma2_true[R_long_true[j]])     
     } else {
       Y1_long[j] <- Y_long[j]
-      W0 <- W_true[[G_long_true[j]]]
+      W0 <- W_true[[R_long_true[j]]]
       W0[j,2] <- eff.s
       W0[j,3] <- eff.a
       W0[j,4] <- 0
-      Sig0 <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W0)
-      theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0)
+      Sig0 <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W0)
+      theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0)
       Y0_long[j] <- rnorm(n = 1,
-                      mean = mu_true[G_long_true[j]] + theta0[j],
-                      sd = sigma2_true[G_long_true[j]]) 
-      W0p <- W_true[[G_long_true[j]]]
+                      mean = mu_true[R_long_true[j]] + theta0[j],
+                      sd = sigma2_true[R_long_true[j]]) 
+      W0p <- W_true[[R_long_true[j]]]
       W0p[j,2] <- eff.s
       W0p[j,3] <- eff.a
       W0p[j,4] <- 0
-      Sig0p <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W0p) 
-      theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0p)
+      Sig0p <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W0p) 
+      theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0p)
       Y0p_long[j] <- rnorm(n = 1,
-                       mean = mu_true[G_long_true[j]] + theta0p[j],
-                       sd = sigma2_true[G_long_true[j]])   
+                       mean = mu_true[R_long_true[j]] + theta0p[j],
+                       sd = sigma2_true[R_long_true[j]])   
     }
   } else {
-    if (G_a_long_true[j] %in% 1:3) {
-      CADE.G[j] <- G_a_long_true[j]
-    }  else if (G_a_long_true[j] == 4) {
+    if (R_a_long_true[j] %in% 1:3) {
+      CADE.G[j] <- R_a_long_true[j]
+    }  else if (R_a_long_true[j] == 4) {
       if (eff.a < h4_true[j]) {
         CADE.G[j] <- 2
       } else {
         CADE.G[j] <- 3
       }
-    } else if (G_a_long_true[j] == 5) {
+    } else if (R_a_long_true[j] == 5) {
       if (eff.a < l5_true[j]) {
         CADE.G[j] <- 3
       } else {
         CADE.G[j] <- 1
       }
-    } else if (G_a_long_true[j] == 6) {
+    } else if (R_a_long_true[j] == 6) {
       if (eff.a < h6_true[j]) {
         CADE.G[j] <- 2
       } else if (eff.a < l6_true[j]) {
@@ -306,27 +306,27 @@ for(j in 1:sum(N)) {
       C[j] <- 0
     }
   }
-  W0 <- W0p <- W1 <- W_true[[G_long_true[j]]]
+  W0 <- W0p <- W1 <- W_true[[R_long_true[j]]]
   W0[j,2] <- W1[j,2] <- eff.s
   W0p[j,2] <- eff.sp
   W0[j,3] <- W0p[j,3] <- W1[j,3] <- eff.a
   W0[j,4] <- W0p[j,4] <- 0
   W1[j,4] <- 1
-  Sig0 <- updateSigma(sum(N), phi_true[[G_long_true[j]]], W0, Sigma_true[[G_long_true[j]]], j)
-  theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0)
+  Sig0 <- updateSigma(sum(N), phi_true[[R_long_true[j]]], W0, Sigma_true[[R_long_true[j]]], j)
+  theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0)
   Y0_long[j] <- rnorm(n = 1,
-                      mean = mu_true[G_long_true[j]] + theta0[j],
-                      sd = sigma2_true[G_long_true[j]]) 
-  Sig1 <- updateSigma(sum(N), phi_true[[G_long_true[j]]], W1, Sigma_true[[G_long_true[j]]], j)
-  theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig1)
+                      mean = mu_true[R_long_true[j]] + theta0[j],
+                      sd = sigma2_true[R_long_true[j]]) 
+  Sig1 <- updateSigma(sum(N), phi_true[[R_long_true[j]]], W1, Sigma_true[[R_long_true[j]]], j)
+  theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig1)
   Y1_long[j] <- rnorm(n = 1,
-                      mean = mu_true[G_long_true[j]] + theta1[j],
-                      sd = sigma2_true[G_long_true[j]]) 
-  Sig0p <- updateSigma(sum(N), phi_true[[G_long_true[j]]], W0p, Sigma_true[[G_long_true[j]]], j) 
-  theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0p)
+                      mean = mu_true[R_long_true[j]] + theta1[j],
+                      sd = sigma2_true[R_long_true[j]]) 
+  Sig0p <- updateSigma(sum(N), phi_true[[R_long_true[j]]], W0p, Sigma_true[[R_long_true[j]]], j) 
+  theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0p)
   Y0p_long[j] <- rnorm(n = 1,
-                       mean = mu_true[G_long_true[j]] + theta0p[j],
-                       sd = sigma2_true[G_long_true[j]]) 
+                       mean = mu_true[R_long_true[j]] + theta0p[j],
+                       sd = sigma2_true[R_long_true[j]]) 
 }
 
 CADE.true <- sum((CADE.G==3)*(Y1_long - Y0_long))/(sum(CADE.G==3))
@@ -340,66 +340,66 @@ CASE.true <- sum((CADE.G==3)*(Y0_long - Y0p_long))/(sum(CADE.G==3))
 # 
 # for(j in 1:sum(N)) {
 #   for(t in pz) {
-#     if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
+#     if (a_long[j] == eff.a & S_long[j] == eff.s & R_a_long_true[j] == 3) {
 #       CADE.G[j,t] <- 3
 #       if (Z_long[j] == 0) {
 #         Y0_long[j,t] <- Y_long[j]
-#         W1 <- W_true[[G_long_true[j]]]
+#         W1 <- W_true[[R_long_true[j]]]
 #         W1[j,2] <- eff.s
 #         W1[j,3] <- t
 #         W1[j,4] <- 1
-#         Sig1 <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W1)
-#         theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig1)
+#         Sig1 <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W1)
+#         theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig1)
 #         Y1_long[j,t] <- rnorm(n = 1,
-#                             mean = mu_true[G_long_true[j]] + theta1[j],
-#                             sd = sigma2_true[G_long_true[j]]) 
+#                             mean = mu_true[R_long_true[j]] + theta1[j],
+#                             sd = sigma2_true[R_long_true[j]]) 
 #         
-#         W0p <- W_true[[G_long_true[j]]]
+#         W0p <- W_true[[R_long_true[j]]]
 #         W0p[j,2] <- eff.sp
 #         W0p[j,3] <- t
 #         W0p[j,4] <- 0
-#         Sig0p <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W0p) 
-#         theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0p)
+#         Sig0p <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W0p) 
+#         theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0p)
 #         Y0p_long[j,t] <- rnorm(n = 1,
-#                              mean = mu_true[G_long_true[j]] + theta0p[j],
-#                              sd = sigma2_true[G_long_true[j]])     
+#                              mean = mu_true[R_long_true[j]] + theta0p[j],
+#                              sd = sigma2_true[R_long_true[j]])     
 #       } else {
 #         Y1_long[j,t] <- Y_long[j]
-#         W0 <- W_true[[G_long_true[j]]]
+#         W0 <- W_true[[R_long_true[j]]]
 #         W0[j,2] <- eff.s
 #         W0[j,3] <- t
 #         W0[j,4] <- 0
-#         Sig0 <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W0)
-#         theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0)
+#         Sig0 <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W0)
+#         theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0)
 #         Y0_long[j,t] <- rnorm(n = 1,
-#                             mean = mu_true[G_long_true[j]] + theta0[j],
-#                             sd = sigma2_true[G_long_true[j]]) 
-#         W0p <- W_true[[G_long_true[j]]]
+#                             mean = mu_true[R_long_true[j]] + theta0[j],
+#                             sd = sigma2_true[R_long_true[j]]) 
+#         W0p <- W_true[[R_long_true[j]]]
 #         W0p[j,2] <- eff.s
 #         W0p[j,3] <- t
 #         W0p[j,4] <- 0
-#         Sig0p <- calcSigma(sum(N), phi_true[[G_long_true[j]]], W0p) 
-#         theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0p)
+#         Sig0p <- calcSigma(sum(N), phi_true[[R_long_true[j]]], W0p) 
+#         theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0p)
 #         Y0p_long[j,t] <- rnorm(n = 1,
-#                              mean = mu_true[G_long_true[j]] + theta0p[j],
-#                              sd = sigma2_true[G_long_true[j]])   
+#                              mean = mu_true[R_long_true[j]] + theta0p[j],
+#                              sd = sigma2_true[R_long_true[j]])   
 #       }
 #     } else {
-#       if (G_a_long_true[j] %in% 1:3) {
-#         CADE.G[j,t] <- G_a_long_true[j]
-#       }  else if (G_a_long_true[j] == 4) {
+#       if (R_a_long_true[j] %in% 1:3) {
+#         CADE.G[j,t] <- R_a_long_true[j]
+#       }  else if (R_a_long_true[j] == 4) {
 #         if (eff.a < h4_true[j]) {
 #           CADE.G[j,t] <- 2
 #         } else {
 #           CADE.G[j,t] <- 3
 #         }
-#       } else if (G_a_long_true[j] == 5) {
+#       } else if (R_a_long_true[j] == 5) {
 #         if (eff.a < l5_true[j]) {
 #           CADE.G[j,t] <- 3
 #         } else {
 #           CADE.G[j,t] <- 1
 #         }
-#       } else if (G_a_long_true[j] == 6) {
+#       } else if (R_a_long_true[j] == 6) {
 #         if (eff.a < h6_true[j]) {
 #           CADE.G[j,t] <- 2
 #         } else if (eff.a < l6_true[j]) {
@@ -415,27 +415,27 @@ CASE.true <- sum((CADE.G==3)*(Y0_long - Y0p_long))/(sum(CADE.G==3))
 #         C[j,t] <- 0
 #       }
 #     }
-#     W0 <- W0p <- W1 <- W_true[[G_long_true[j]]]
+#     W0 <- W0p <- W1 <- W_true[[R_long_true[j]]]
 #     W0[j,2] <- W1[j,2] <- eff.s
 #     W0p[j,2] <- eff.sp
 #     W0[j,3] <- W0p[j,3] <- W1[j,3] <- t
 #     W0[j,4] <- W0p[j,4] <- 0
 #     W1[j,4] <- 1
-#     Sig0 <- updateSigma(sum(N), phi_true[[G_long_true[j]]], W0, Sigma_true[[G_long_true[j]]], j)
-#     theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0)
+#     Sig0 <- updateSigma(sum(N), phi_true[[R_long_true[j]]], W0, Sigma_true[[R_long_true[j]]], j)
+#     theta0 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0)
 #     Y0_long[j,t] <- rnorm(n = 1,
-#                         mean = mu_true[G_long_true[j]] + theta0[j],
-#                         sd = sigma2_true[G_long_true[j]]) 
-#     Sig1 <- updateSigma(sum(N), phi_true[[G_long_true[j]]], W1, Sigma_true[[G_long_true[j]]], j)
-#     theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig1)
+#                         mean = mu_true[R_long_true[j]] + theta0[j],
+#                         sd = sigma2_true[R_long_true[j]]) 
+#     Sig1 <- updateSigma(sum(N), phi_true[[R_long_true[j]]], W1, Sigma_true[[R_long_true[j]]], j)
+#     theta1 <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig1)
 #     Y1_long[j,t] <- rnorm(n = 1,
-#                         mean = mu_true[G_long_true[j]] + theta1[j],
-#                         sd = sigma2_true[G_long_true[j]]) 
-#     Sig0p <- updateSigma(sum(N), phi_true[[G_long_true[j]]], W0p, Sigma_true[[G_long_true[j]]], j) 
-#     theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[G_long_true[j]]*Sig0p)
+#                         mean = mu_true[R_long_true[j]] + theta1[j],
+#                         sd = sigma2_true[R_long_true[j]]) 
+#     Sig0p <- updateSigma(sum(N), phi_true[[R_long_true[j]]], W0p, Sigma_true[[R_long_true[j]]], j) 
+#     theta0p <- rmnorm(1, mean = 0, varcov = psi2_true[R_long_true[j]]*Sig0p)
 #     Y0p_long[j,t] <- rnorm(n = 1,
-#                          mean = mu_true[G_long_true[j]] + theta0p[j],
-#                          sd = sigma2_true[G_long_true[j]]) 
+#                          mean = mu_true[R_long_true[j]] + theta0p[j],
+#                          sd = sigma2_true[R_long_true[j]]) 
 #   }
 # }
 
