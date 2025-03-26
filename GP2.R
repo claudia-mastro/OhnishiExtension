@@ -361,9 +361,7 @@ for(s in 2:mcmc_samples){
     if (k!=6) {
       for (l in 1:2){ 
         gamma[[s]][k,l] <- rnorm(1, mean=gamma[[(s-1)]][k,l], sd=metrop_sd_gamma)
-        Pi_new <- Pi
-        Pi_new[,k] <- exp(crossprod(t(v_long), gamma[[s]][k,]))
-        Pi_new <- Pi_new/rowSums(Pi_new)
+        Pi_new <- calcPi(sum(N), gamma[[s]], v_long)
         
         denom <- sum(log(Pi[cbind(seq_along(R[[s-1]]), R[[s-1]])])) + 
           dnorm(gamma[[s-1]][k,l], mean=gam_priormean, sd=sqrt(gam_priorvar), log=T)
@@ -375,23 +373,7 @@ for(s in 2:mcmc_samples){
         uni_draw<-runif(n = 1,
                         min = 0.00,
                         max = 1.00)
-        if(is.na(ratio)) {
-          print("GAMMA")
-          print(denom)
-          print(numer)
-          saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/theta.rds")
-          saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/sig2.rds")
-          saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/mu.rds")
-          saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/R.rds")
-          saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/phi.rds")
-          saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/psi2.rds")
-          saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h4.rds")
-          saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l5.rds")
-          saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/h6.rds")
-          saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/l6.rds")
-          saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/gamma.rds")
-          saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.24/Pi.rds")
-        }
+ 
         if(ratio > uni_draw){
           Pi <- Pi_new
           acctot_gamma[[s]][k,l] <- acctot_gamma[[s]][k,l] + 1 
