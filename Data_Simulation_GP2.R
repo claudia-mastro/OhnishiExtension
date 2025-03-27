@@ -150,7 +150,7 @@ R_a_long_true<-rep(NA,
                    times = sum(N))
 R_a_long_true[(R_long_true == 1) | ((R_long_true == 5) & (a_long >= l5_true)) | ((R_long_true == 6) & (a_long >= l6_true))]<-1
 R_a_long_true[(R_long_true == 2) | ((R_long_true == 4) & (a_long < h4_true)) | ((R_long_true == 6) & (a_long < h6_true))]<-2
-R_a_long_true[(R_long_true == 3) | ((R_long_true == 4) & (a_long >= h4_true)) | ((R_long_true == 5) & (a_long < l5_true)) | ((R_long_true == 6 & a_long) >= (h6_true & a_long < l6_true))]<-3
+R_a_long_true[(R_long_true == 3) | ((R_long_true == 4) & (a_long >= h4_true)) | ((R_long_true == 5) & (a_long < l5_true)) | (R_long_true == 6 & (a_long >= h6_true) & (a_long < l6_true))]<-3
 R_a_true<-list(0)
 R_a_true[[1]]<-R_a_long_true[1:N[1]]
 for(j in 2:J){
