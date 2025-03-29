@@ -335,19 +335,7 @@ for(s in 2:mcmc_samples){
         
         ratio <- exp(numer - denom)
         uni_draw <- runif(n = 1, min = 0.00, max = 1.00)
-        if(is.na(ratio)) {
-          print("PHI")
-          saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/theta.rds")
-          saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/sig2.rds")
-          saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/mu.rds")
-          saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/R.rds")
-          saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/phi.rds")
-          saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/psi2.rds")
-          saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h4.rds")
-          saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l5.rds")
-          saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h6.rds")
-          saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l6.rds")
-        }
+
         if(ratio > uni_draw){
           Sigma[[k]] <- Sig_new
           acctot_phi[[s]][h,k] <- acctot_phi[[s]][h,k] + 1
@@ -452,19 +440,6 @@ for(s in 2:mcmc_samples){
     uni_draw <- runif(n = 1,
                     min = 0.00,
                     max = 1.00)
-    if(is.na(ratio)) {
-      print("H4")   
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l6.rds")
-    }
     
     if(ratio > uni_draw){
       logit_h4[[s]][R[[s-1]]==k] <- logit_h4_new
@@ -496,19 +471,6 @@ for(s in 2:mcmc_samples){
     uni_draw <- runif(n = 1,
                       min = 0.00,
                       max = 1.00)
-    if(is.na(ratio)) {
-      print("L5")    
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l6.rds")
-    }
     
     if(ratio > uni_draw){
       logit_l5[[s]][R[[s-1]]==k] <- logit_l5_new
@@ -540,19 +502,7 @@ for(s in 2:mcmc_samples){
     uni_draw <- runif(n = 1,
                       min = 0.00,
                       max = 1.00)
-    if(is.na(ratio)) {
-      print("H6")
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l6.rds")
-    }
+
     if(ratio > uni_draw){
       logit_h6[[s]][R[[s-1]]==k] <- logit_h6_new
       h6[R[[s-1]]==k] <- h6_new
@@ -583,19 +533,6 @@ for(s in 2:mcmc_samples){
     uni_draw <- runif(n = 1,
                       min = 0.00,
                       max = 1.00)
-    if(is.na(ratio)) {
-      print("L6")
-      saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/theta.rds")
-      saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/sig2.rds")
-      saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/mu.rds")
-      saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/R.rds")
-      saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/phi.rds")
-      saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/psi2.rds")
-      saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h4.rds")
-      saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l5.rds")
-      saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h6.rds")
-      saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l6.rds")
-    }
     
     if(ratio > uni_draw){
       logit_l6[[s]][R[[s-1]]==k] <- logit_l6_new
@@ -610,10 +547,6 @@ for(s in 2:mcmc_samples){
   }
   
   ## R
-  R_a <- calcRa(sum(N),R[[s-1]], h4, l5, h6, l6)
-  
-  Y_mat <- matrix(Y_long, nrow=sum(N), ncol=6)
-  sig_mat <- t(replicate(sum(N), sig2[[s]]))
   D_mat <- cbind(D_long==1, D_long==0, D_long==Z_long,
                  (calcRa(sum(N), rep(4, sum(N)), h4, l5, h6, l6)==2 & D_long==0) |
                   (calcRa(sum(N), rep(4, sum(N)), h4, l5, h6, l6)==3 & D_long==Z_long),
@@ -623,9 +556,11 @@ for(s in 2:mcmc_samples){
                    (calcRa(sum(N), rep(6, sum(N)), h4, l5, h6, l6)==2 & D_long==0) |
                    (calcRa(sum(N), rep(6, sum(N)), h4, l5, h6, l6)==3 & D_long==Z_long))
   
-  numer <- dnorm(Y_mat, mean=t(apply(theta[[s]], 1, function(x) mu[[s]]+x)), 
-                 sd=sqrt(sig_mat), log=T) + log(D_mat) + log(Pi)
-  
+  numer <- matrix(NA, nrow=sum(N), ncol=6)
+  for (k in 1:6) {
+    numer[,k] <- dnorm(Y_long, mean=theta[[s]][,k] + mu[[s]][k], sd=sqrt(sig2[[s]][k]), log=T)
+  }
+  numer <- numer + log(D_mat) + log(Pi)
   probs <- sapply(c(1:6), function(k) 1.00/rowSums(exp(numer - numer[,k])))
   probs[is.na(probs) == 1]<-0.00
   
@@ -641,109 +576,109 @@ for(s in 2:mcmc_samples){
   #Estimands
   ##########
   
-  Y1 <- rep(NA, sum(N))
-  Y0 <- rep(NA, sum(N))
-  Y0p <- rep(NA, sum(N))
-  C <- rep(NA, sum(N))
-
-  eff.a <- 0.8
-  eff.s <- 0.4
-  eff.sp <- 0.8
-  ij <- 0
-  for (j in 1:J) {
-    for (i in 1:N[J]) {
-      ij <- ij + 1
-      ## Need to figure out G(eff.a)
-      if (R[[s]][ij] %in% 1:3) {
-        G.eff.a <- R[[s]][ij]
-      }  else if (R[[s]][ij]==4) {
-        if (eff.a < h4[ij]) {
-          G.eff.a <- 2
-        } else {
-          G.eff.a <- 3
-        }
-      } else if (R[[s]][ij]==5) {
-        if (eff.a < l5[ij]) {
-          G.eff.a <- 3
-        } else {
-          G.eff.a <- 1
-        }
-      } else if (R[[s]][ij]==6) {
-        if (eff.a < h6[ij]) {
-          G.eff.a <- 2
-        } else if (eff.a < l6[ij]) {
-          G.eff.a <- 3
-        } else {
-          G.eff.a <- 1
-        }
-      }
-
-      if (G.eff.a == 3) {
-        C[ij] <- 1
-      } else {
-        C[ij] <- 0
-      }
-
-      if (C[ij]==1) {
-        W0p <- W0 <- W1 <- Whl[[R[[s]][ij]]]
-        W0[ij,2] <- W1[ij,2] <- eff.s
-        W0p[ij,2] <- eff.sp
-        W0p[ij,3] <- W0[ij,3] <- W1[ij,3] <- eff.a
-        W0p[ij,4] <- W0[ij,4] <- 0
-        W1[ij,4] <- 1
-
-        Sig0 <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W0, Sigma[[R[[s]][ij]]], ij)
-        theta0 <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig0)
-        Y0[ij] <- rnorm(n = 1,
-                      mean = mu[[s]][R[[s]][ij]] + theta0[ij],
-                      sd = sqrt(sig2[[s]][R[[s]][ij]]))
-        Sig1 <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W1, Sigma[[R[[s]][ij]]], ij)
-        theta1 <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig1)
-        Y1[ij] <- rnorm(n = 1,
-                      mean = mu[[s]][R[[s]][ij]] + theta1[ij],
-                      sd = sqrt(sig2[[s]][R[[s]][ij]]))
-
-        Sig0p <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W0p, Sigma[[R[[s]][ij]]], ij)
-        theta0p <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig0p)
-        Y0p[ij] <- rnorm(n = 1,
-                       mean = mu[[s]][R[[s]][ij]] + theta0p[ij],
-                       sd = sqrt(sig2[[s]][R[[s]][ij]]))
-      }
-    }
-  }
-  CADE[s] <- sum(C*(Y1-Y0), na.rm=TRUE)/sum(C)
-  CASE[s] <- sum(C*(Y0-Y0p), na.rm=TRUE)/sum(C)
+  # Y1 <- rep(NA, sum(N))
+  # Y0 <- rep(NA, sum(N))
+  # Y0p <- rep(NA, sum(N))
+  # C <- rep(NA, sum(N))
+  # 
+  # eff.a <- 0.8
+  # eff.s <- 0.4
+  # eff.sp <- 0.8
+  # ij <- 0
+  # for (j in 1:J) {
+  #   for (i in 1:N[J]) {
+  #     ij <- ij + 1
+  #     ## Need to figure out G(eff.a)
+  #     if (R[[s]][ij] %in% 1:3) {
+  #       G.eff.a <- R[[s]][ij]
+  #     }  else if (R[[s]][ij]==4) {
+  #       if (eff.a < h4[ij]) {
+  #         G.eff.a <- 2
+  #       } else {
+  #         G.eff.a <- 3
+  #       }
+  #     } else if (R[[s]][ij]==5) {
+  #       if (eff.a < l5[ij]) {
+  #         G.eff.a <- 3
+  #       } else {
+  #         G.eff.a <- 1
+  #       }
+  #     } else if (R[[s]][ij]==6) {
+  #       if (eff.a < h6[ij]) {
+  #         G.eff.a <- 2
+  #       } else if (eff.a < l6[ij]) {
+  #         G.eff.a <- 3
+  #       } else {
+  #         G.eff.a <- 1
+  #       }
+  #     }
+  # 
+  #     if (G.eff.a == 3) {
+  #       C[ij] <- 1
+  #     } else {
+  #       C[ij] <- 0
+  #     }
+  # 
+  #     if (C[ij]==1) {
+  #       W0p <- W0 <- W1 <- Whl[[R[[s]][ij]]]
+  #       W0[ij,2] <- W1[ij,2] <- eff.s
+  #       W0p[ij,2] <- eff.sp
+  #       W0p[ij,3] <- W0[ij,3] <- W1[ij,3] <- eff.a
+  #       W0p[ij,4] <- W0[ij,4] <- 0
+  #       W1[ij,4] <- 1
+  # 
+  #       Sig0 <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W0, Sigma[[R[[s]][ij]]], ij)
+  #       theta0 <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig0)
+  #       Y0[ij] <- rnorm(n = 1,
+  #                     mean = mu[[s]][R[[s]][ij]] + theta0[ij],
+  #                     sd = sqrt(sig2[[s]][R[[s]][ij]]))
+  #       Sig1 <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W1, Sigma[[R[[s]][ij]]], ij)
+  #       theta1 <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig1)
+  #       Y1[ij] <- rnorm(n = 1,
+  #                     mean = mu[[s]][R[[s]][ij]] + theta1[ij],
+  #                     sd = sqrt(sig2[[s]][R[[s]][ij]]))
+  # 
+  #       Sig0p <- updateSigma(sum(N), phi[[s]][,R[[s]][ij]], W0p, Sigma[[R[[s]][ij]]], ij)
+  #       theta0p <- rmnorm(1, mean = 0, varcov = psi2[[s]][R[[s]][ij]]*Sig0p)
+  #       Y0p[ij] <- rnorm(n = 1,
+  #                      mean = mu[[s]][R[[s]][ij]] + theta0p[ij],
+  #                      sd = sqrt(sig2[[s]][R[[s]][ij]]))
+  #     }
+  #   }
+  # }
+  # CADE[s] <- sum(C*(Y1-Y0), na.rm=TRUE)/sum(C)
+  # CASE[s] <- sum(C*(Y0-Y0p), na.rm=TRUE)/sum(C)
   
   if (s %in% c(1000, 2000, 4000, 5000, 6000, 7000, 8000, 9000, 10000)){
-    write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/CADE_CASE.csv")
-    saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/theta.rds")
-    saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/sig2.rds")
-    saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/mu.rds")
-    saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/R.rds")
-    saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/phi.rds")
-    saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/psi2.rds")
-    saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h4.rds")
-    saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l5.rds")
-    saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h6.rds")
-    saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l6.rds")
-    saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/gamma.rds")
-    saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/Pi.rds")
+    write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/CADE_CASE.csv")
+    saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/theta.rds")
+    saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/sig2.rds")
+    saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/mu.rds")
+    saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/R.rds")
+    saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/phi.rds")
+    saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/psi2.rds")
+    saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h4.rds")
+    saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l5.rds")
+    saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h6.rds")
+    saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l6.rds")
+    saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/gamma.rds")
+    saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/Pi.rds")
   }
 }
 
-write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/CADE_CASE.csv")
-saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/theta.rds")
-saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/sig2.rds")
-saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/mu.rds")
-saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/R.rds")
-saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/phi.rds")
-saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/psi2.rds")
-saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h4.rds")
-saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l5.rds")
-saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/h6.rds")
-saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/l6.rds")
-saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/gamma.rds")
-saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.26/Pi.rds")
+write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/CADE_CASE.csv")
+saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/theta.rds")
+saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/sig2.rds")
+saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/mu.rds")
+saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/R.rds")
+saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/phi.rds")
+saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/psi2.rds")
+saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h4.rds")
+saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l5.rds")
+saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h6.rds")
+saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l6.rds")
+saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/gamma.rds")
+saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/Pi.rds")
 
 
 
