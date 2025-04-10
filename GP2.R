@@ -6,13 +6,22 @@ library(matrixStats)
 library(LaplacesDemon)
 library(truncnorm)
 library(Matrix)
-id <- 1
+args <- commandArgs(trailingOnly = TRUE)
+id <- as.integer(args[1])
+print(id)
 source("~/project/OhnishiExtension/JWCode/Data_Simulation_GP2.R")
 p <- 4
+saveRDS(list(theta_true, sigma2_true, mu_true, R_long_true, phi_true, psi2_true, 
+             h4_true, l5_true, h6_true, l6_true, gamma_true, 
+             delta_h4_true, delta_l5_true, delta_h6_true, delta_l6_true, 
+             tau2_h4_true, tau2_l5_true, tau2_h6_true, tau2_l6_true),
+        paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/true_vals", 
+               id, ".rds"))
+
 #######
 # Seed
 #######
-set.seed(5489)
+set.seed(id)
 
 ############
 # Functions
@@ -242,22 +251,22 @@ R[[1]] <- sapply(c(1:sum(N)),
 # Metropolis Settings
 ######################
 
-metrop_sd_phi <- rep(0.01, 6)
+metrop_sd_phi <- rep(1, 6)
 acctot_phi <- list(matrix(0, nrow=6, ncol=6))[rep(1,mcmc_samples)]
 
-metrop_sd_gamma <- matrix(0.50, nrow = 5, ncol = 2)
+metrop_sd_gamma <- matrix(0.2, nrow = 5, ncol = 2)
 acctot_gamma <- list(matrix(0, nrow=6, ncol=2))[rep(1,mcmc_samples)]
 
-metrop_sd_h4 <- rep(1.00, times = sum(N))
+metrop_sd_h4 <- rep(0.5, times = sum(N))
 acctot_h4 <- list(rep(0, 6))[rep(1,mcmc_samples)]
 
-metrop_sd_l5 <- rep(1.00, times = sum(N))
+metrop_sd_l5 <- rep(0.5, times = sum(N))
 acctot_l5 <- list(rep(0, 6))[rep(1,mcmc_samples)]
 
-metrop_sd_h6 <- rep(1.00, times = sum(N))
+metrop_sd_h6 <- rep(0.5, times = sum(N))
 acctot_h6 <- list(rep(0, 6))[rep(1,mcmc_samples)]
 
-metrop_sd_l6 <- rep(1.00, times = sum(N))
+metrop_sd_l6 <- rep(0.5, times = sum(N))
 acctot_l6 <- list(rep(0, 6))[rep(1,mcmc_samples)]
 
 #####################
@@ -649,36 +658,42 @@ for(s in 2:mcmc_samples){
   # CADE[s] <- sum(C*(Y1-Y0), na.rm=TRUE)/sum(C)
   # CASE[s] <- sum(C*(Y0-Y0p), na.rm=TRUE)/sum(C)
   
-  if (s %in% c(1000, 2000, 4000, 5000, 6000, 7000, 8000, 9000, 10000)){
-    write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/CADE_CASE.csv")
-    saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/theta.rds")
-    saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/sig2.rds")
-    saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/mu.rds")
-    saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/R.rds")
-    saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/phi.rds")
-    saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/psi2.rds")
-    saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h4.rds")
-    saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l5.rds")
-    saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h6.rds")
-    saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l6.rds")
-    saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/gamma.rds")
-    saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/Pi.rds")
+  if (s %in% c(1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000)){
+    print("SAVING")
+    #write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_4.8/CADE_CASE.csv")
+    saveRDS(theta, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/theta",
+                          id, ".rds"))
+    saveRDS(sig2, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/sig2",
+                         id, ".rds"))
+    saveRDS(mu, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/mu",
+                       id, ".rds"))
+    saveRDS(R, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/R",
+                      id, ".rds"))
+    saveRDS(phi, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/phi",
+                        id, ".rds"))
+    saveRDS(psi2, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/psi2",
+                         id, ".rds"))
+    saveRDS(logit_h4, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/h4",
+                             id, ".rds"))
+    saveRDS(logit_l5, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/l5",
+                             id, ".rds"))
+    saveRDS(logit_h6, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/h6",
+                             id, ".rds"))
+    saveRDS(logit_l6,paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/l6",
+                            id, ".rds"))
+    saveRDS(gamma, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/gamma",
+                          id, ".rds"))
+    saveRDS(Pi, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/Pi",
+                       id, ".rds"))
+    saveRDS(delta, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/delta",
+                       id, ".rds"))
+    saveRDS(tau2, paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/tau2",
+                       id, ".rds"))
+    saveRDS(list(acctot_phi, acctot_gamma, acctot_h4, acctot_l5, acctot_h6, acctot_l6),
+            paste0("/home/cim24/project/OhnishiExtension/Results/GP2_4.8/acctots", 
+                   id, ".rds"))
   }
 }
-
-write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/CADE_CASE.csv")
-saveRDS(theta, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/theta.rds")
-saveRDS(sig2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/sig2.rds")
-saveRDS(mu, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/mu.rds")
-saveRDS(R, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/R.rds")
-saveRDS(phi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/phi.rds")
-saveRDS(psi2, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/psi2.rds")
-saveRDS(logit_h4, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h4.rds")
-saveRDS(logit_l5, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l5.rds")
-saveRDS(logit_h6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/h6.rds")
-saveRDS(logit_l6, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/l6.rds")
-saveRDS(gamma, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/gamma.rds")
-saveRDS(Pi, "/home/cim24/project/OhnishiExtension/Results/GP2_3.27/Pi.rds")
 
 
 

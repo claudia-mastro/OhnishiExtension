@@ -74,7 +74,7 @@ updateSigma<-function(N, phi, w, Sigma, j) {
 ###########
 #Predictors
 ###########
-x_long<-rnorm(n = sum(N))
+x_long<-rnorm(n = sum(N), mean=0, sd=1)
 q_long<-cbind(1, 
               x_long)
 v_long<-q_long
@@ -82,6 +82,7 @@ v_long<-q_long
 ################
 #True Parameters
 ################
+set.seed(1222)
 gamma_true<-matrix(NA,
                    nrow = 6,
                    ncol = 2)
@@ -89,6 +90,8 @@ for(k in 1:5){
   gamma_true[k,]<-rnorm(n = 2)
 }
 gamma_true[6,]<-0.00
+
+#gamma_true <- cbind(c(0.05, 0.1, 0.1, 0.1, 0.05, 0), c(0.4, -0.1, 0.2, -0.1, -0.2, 0))
 
 pi_mat_temp<-matrix(NA,
                     nrow = sum(N),
@@ -200,14 +203,14 @@ Sigma_true <- list(calcSigma(sum(N), phi_true[[1]], W_true[[1]]),
                    calcSigma(sum(N), phi_true[[5]], W_true[[5]]),
                    calcSigma(sum(N), phi_true[[6]], W_true[[6]]))
 
-theta_true <- cbind(rmnorm(1, 0, varcov=Sigma_true[[1]]*psi2_true[1]),
-                   rmnorm(1, 0, varcov=Sigma_true[[2]]*psi2_true[2]),
-                   rmnorm(1, 0, varcov=Sigma_true[[3]]*psi2_true[3]),
+theta_true <- cbind(rmnorm(1, -4, varcov=Sigma_true[[1]]*psi2_true[1]),
+                   rmnorm(1, -2, varcov=Sigma_true[[2]]*psi2_true[2]),
+                   rmnorm(1, -1, varcov=Sigma_true[[3]]*psi2_true[3]),
                    rmnorm(1, 0, varcov=Sigma_true[[4]]*psi2_true[4]),
-                   rmnorm(1, 0, varcov=Sigma_true[[5]]*psi2_true[5]),
-                   rmnorm(1, 0, varcov=Sigma_true[[6]]*psi2_true[6]))
+                   rmnorm(1, 2, varcov=Sigma_true[[5]]*psi2_true[5]),
+                   rmnorm(1, 4, varcov=Sigma_true[[6]]*psi2_true[6]))
 
-mu_true <- rnorm(6, 0, sd=4)
+mu_true <- c(12, -10, 8, -4, 4, -2)
 
 sigma2_true <- runif(6)
 
