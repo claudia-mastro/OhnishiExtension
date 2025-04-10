@@ -119,10 +119,10 @@ for(j in 2:J){
   R_true[[j]]<-R_long_true[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
 }
 
-delta_h4_true <- rnorm(n = 2)
-delta_l5_true <- rnorm(n = 2)
-delta_h6_true <- rnorm(n = 2)
-delta_l6_true <- rnorm(n = 2)
+delta_h4_true <- rnorm(n = 2, sd=0.1)
+delta_l5_true <- rnorm(n = 2, sd=0.1)
+delta_h6_true <- rnorm(n = 2, sd=0.1)
+delta_l6_true <- rnorm(n = 2, sd=0.1)
 tau2_h4_true<-0.01
 tau2_l5_true<-0.01
 tau2_h6_true<-0.01
