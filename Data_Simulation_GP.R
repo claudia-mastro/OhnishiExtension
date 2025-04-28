@@ -147,7 +147,7 @@ G_a_long_true<-rep(NA,
                    times = sum(N))
 G_a_long_true[(G_long_true == 1) | ((G_long_true == 5) & (a_long >= l0_true)) | ((G_long_true == 6) & (a_long >= l1_true))]<-1
 G_a_long_true[(G_long_true == 2) | ((G_long_true == 4) & (a_long < h0_true)) | ((G_long_true == 6) & (a_long < h1_true))]<-2
-G_a_long_true[(G_long_true == 3) | ((G_long_true == 4) & (a_long >= h0_true)) | ((G_long_true == 5) & (a_long < l0_true)) | ((G_long_true == 6 & a_long) >= (h1_true & a_long < l1_true))]<-3
+G_a_long_true[(G_long_true == 3) | ((G_long_true == 4) & (a_long >= h0_true)) | ((G_long_true == 5) & (a_long < l0_true)) | (G_long_true == 6 & (a_long >= h1_true) & (a_long < l1_true))]<-3
 G_a_true<-list(0)
 G_a_true[[1]]<-G_a_long_true[1:N[1]]
 for(j in 2:J){
