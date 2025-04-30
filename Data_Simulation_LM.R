@@ -214,7 +214,7 @@ for(j in 1:sum(N)) {
       W0p[4] <- eff.a
       W0p[5] <- 0
       mu0p <- W0p %*% beta_true[G_a_long_true[j], ]
-      var0p <- sigma2_true[G_long_true[j]]
+      var0p <- sigma2_true[G_a_long_true[j]]
       Y0p_long[j] <- rnorm(n = 1,
                            mean = mu0p,
                            sd = sqrt(var0p))
