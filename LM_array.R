@@ -6,7 +6,14 @@ library(matrixStats)
 args <- commandArgs(trailingOnly = TRUE)
 id <- as.integer(args[1])
 print(id)
-source("~/project/OhnishiExtension/JWCode/Data_Simulation.R")
+J <- as.integer(args[2])
+print(J)
+Nj <- as.integer(args[3])
+print(Nj)
+v <- paste0("LM_4.28_J", J, "Nj", Nj)
+print(v)
+source("~/project/OhnishiExtension/JWCode/Data_Simulation_LM.R")
+
 #########
 #Function
 #########
@@ -26,9 +33,9 @@ set.seed(id)
 ################
 #Global Settings
 ################
-mcmc_samples<-10000
-burnin <- 5000
-thin <- 10
+mcmc_samples<-100000
+burnin <- 50000
+thin <- 50
 iters <- burnin:mcmc_samples
 iters <- iters[seq(1, mcmc_samples-burnin + thin, thin)]
 
@@ -593,18 +600,61 @@ for(s in 2:mcmc_samples){
         } else {
           C[ij] <- 0
         }
-        
+        if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
+          if (Z_long[j] == 0) {
+            Y0 <- Y_long[j]
+            W0p <- W1 <- W[ij,]
+            W1[3] <- eff.s
+            W0p[3] <- eff.sp
+            W0p[4] <- W1[4] <- eff.a
+            W0p[5] <- 0
+            W1[5] <- 1
+
+            mu1<-W1%*%beta[[s]][G.eff.a,]
+            var1<-sigma2[[s]][G.eff.a]
+            Y1[ij]<-rnorm(n = 1,
+                          mean = mu1,
+                          sd = sqrt(var1))
+            
+            mu0p<-W0p%*%beta[[s]][G.eff.a,]
+            var0p<-sigma2[[s]][G.eff.a]
+            Y0p[ij]<-rnorm(n = 1,
+                           mean = mu0p,
+                           sd = sqrt(var0p))  
+          } else if (Z_long[j]==1) {
+          Y1 <- Y_long[j]
+          W0p <- W0 <- W[ij,]
+          W0[3] <- eff.s
+          W0p[3] <- eff.sp
+          W0p[4] <- W0[4] <- eff.a
+          W0p[5] <- W0[5] <- 0
+          
+          mu0<-W0%*%beta[[s]][G.eff.a,]
+          var0<-sigma2[[s]][G.eff.a]
+          Y0[ij]<-rnorm(n = 1,
+                        mean = mu0,
+                        sd = sqrt(var0)) 
+          
+          mu0p<-W0p%*%beta[[s]][G.eff.a,]
+          var0p<-sigma2[[s]][G.eff.a]
+          Y0p[ij]<-rnorm(n = 1,
+                         mean = mu0p,
+                         sd = sqrt(var0p)) 
+          }
+        } else {
         W0p <- W0 <- W1 <- W[ij,]
         W0[3] <- W1[3] <- eff.s
         W0p[3] <- eff.sp
         W0p[4] <- W0[4] <- W1[4] <- eff.a
         W0p[5] <- W0[5] <- 0
         W1[5] <- 1
+        
         mu0<-W0%*%beta[[s]][G.eff.a,]
         var0<-sigma2[[s]][G.eff.a]
         Y0[ij]<-rnorm(n = 1,
                       mean = mu0,
                       sd = sqrt(var0)) 
+        
         mu1<-W1%*%beta[[s]][G.eff.a,]
         var1<-sigma2[[s]][G.eff.a]
         Y1[ij]<-rnorm(n = 1,
@@ -615,48 +665,50 @@ for(s in 2:mcmc_samples){
         var0p<-sigma2[[s]][G.eff.a]
         Y0p[ij]<-rnorm(n = 1,
                        mean = mu0p,
-                       sd = sqrt(var0p))        
+                       sd = sqrt(var0p)) 
+        }
       }
     }
     CADE[s] <- sum(C*(Y1-Y0))/sum(C)
     CASE[s] <- sum(C*(Y0-Y0p))/sum(C)
   }
 }
-
-
-saveRDS(CADE, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/CADE",
+print("saving")
+print(paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CADE",
+             id, ".rds"))
+saveRDS(CADE, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CADE",
                      id, ".rds"))
-saveRDS(CASE, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/CASE",
+saveRDS(CASE, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CASE",
                      id, ".rds"))
-saveRDS(beta, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/beta",
+saveRDS(beta, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/beta",
                      id, ".rds"))
-saveRDS(sigma2, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/sigma2",
+saveRDS(sigma2, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/sigma2",
                        id, ".rds"))
-saveRDS(G, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/G",
+saveRDS(G, paste0("/home/cim24/project/OhnishiExtension/Results/", v, "/G",
                   id, ".rds"))
-saveRDS(alpha, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/alpha",
+saveRDS(alpha, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/alpha",
                       id, ".rds"))
-saveRDS(h0, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/h0",
+saveRDS(h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/h0",
                    id, ".rds"))
-saveRDS(l0, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/l0",
+saveRDS(l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/l0",
                    id, ".rds"))
-saveRDS(h1, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/h1",
+saveRDS(h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/h1",
                    id, ".rds"))
-saveRDS(l1, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/l1",
+saveRDS(l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/l1",
                    id, ".rds"))
-saveRDS(delta_h0, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/deltah0",
+saveRDS(delta_h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltah0",
                          id, ".rds"))
-saveRDS(delta_l0, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/deltal0",
+saveRDS(delta_l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltal0",
                          id, ".rds"))
-saveRDS(delta_h1, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/deltah1",
+saveRDS(delta_h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltah1",
                          id, ".rds"))
-saveRDS(delta_l1, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/deltal1",
+saveRDS(delta_l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltal1",
                          id, ".rds"))
-saveRDS(tau2_h0, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/tau2h0",
+saveRDS(tau2_h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2h0",
                         id, ".rds"))
-saveRDS(tau2_l0, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/tau2l0",
+saveRDS(tau2_l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2l0",
                         id, ".rds"))
-saveRDS(tau2_h1, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/tau2h1",
+saveRDS(tau2_h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2h1",
                         id, ".rds"))
-saveRDS(tau2_l1, paste0("/home/cim24/project/OhnishiExtension/Results/LM_4.25/tau2l1",
+saveRDS(tau2_l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2l1",
                         id, ".rds"))
