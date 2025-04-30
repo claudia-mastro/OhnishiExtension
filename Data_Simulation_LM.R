@@ -235,7 +235,7 @@ for(j in 1:sum(N)) {
       W0p[4] <- eff.a
       W0p[5] <- 0
       mu0p <- W0p %*% beta_true[G_a_long_true[j], ]
-      var0p <- sigma2_true[G_long_true[j]]
+      var0p <- sigma2_true[G_a_long_true[j]]
       Y0p_long[j] <- rnorm(n = 1,
                            mean = mu0p,
                            sd = sqrt(var0p))
@@ -270,28 +270,28 @@ for(j in 1:sum(N)) {
     } else {
       C[j] <- 0
     }
+    W0 <- W0p <- W1 <- W[j, ]
+    W0[3] <- W1[3] <- eff.s
+    W0p[3] <- eff.sp
+    W0[4] <- W0p[4] <- W1[4] <- eff.a
+    W0[5] <- W0p[5] <- 0
+    W1[5] <- 1
+    mu0 <- W0 %*% beta_true[CADE.G[j], ]
+    var0 <- sigma2_true[CADE.G[j]]
+    Y0_long[j] <- rnorm(n = 1,
+                        mean = mu0,
+                        sd = sqrt(var0))
+    mu1 <- W1 %*% beta_true[CADE.G[j], ]
+    var1 <- sigma2_true[CADE.G[j]]
+    Y1_long[j] <- rnorm(n = 1,
+                        mean = mu1,
+                        sd = sqrt(var1))
+    mu0p <- W0p %*% beta_true[CADE.G[j], ]
+    var0p <- sigma2_true[CADE.G[j]]
+    Y0p_long[j] <- rnorm(n = 1,
+                         mean = mu0p,
+                         sd = sqrt(var0p))
   }
-  W0 <- W0p <- W1 <- W[j, ]
-  W0[3] <- W1[3] <- eff.s
-  W0p[3] <- eff.sp
-  W0[4] <- W0p[4] <- W1[4] <- eff.a
-  W0[5] <- W0p[5] <- 0
-  W1[5] <- 1
-  mu0 <- W0 %*% beta_true[CADE.G[j], ]
-  var0 <- sigma2_true[CADE.G[j]]
-  Y0_long[j] <- rnorm(n = 1,
-                      mean = mu0,
-                      sd = sqrt(var0))
-  mu1 <- W1 %*% beta_true[CADE.G[j], ]
-  var1 <- sigma2_true[CADE.G[j]]
-  Y1_long[j] <- rnorm(n = 1,
-                      mean = mu1,
-                      sd = sqrt(var1))
-  mu0p <- W0p %*% beta_true[CADE.G[j], ]
-  var0p <- sigma2_true[CADE.G[j]]
-  Y0p_long[j] <- rnorm(n = 1,
-                       mean = mu0p,
-                       sd = sqrt(var0p))
 }
 
 CADE.true <- sum((CADE.G==3)*(Y1_long - Y0_long))/(sum(CADE.G==3))
