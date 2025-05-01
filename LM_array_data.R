@@ -3,18 +3,9 @@
 ###############
 library(mnormt)
 library(matrixStats)
-args <- commandArgs(trailingOnly = TRUE)
-id <- as.integer(args[1])
-print(id)
-J <- as.integer(args[2])
-print(J)
-Nj <- as.integer(args[3])
-print(Nj)
-nalpha <- as.integer(args[4])
-print(nalpha)
-v <- paste0("LM_4.30_nalpha", nalpha)
+v <- paste0("LM_5.1_data")
 print(v)
-source("~/project/OhnishiExtension/JWCode/Data_Simulation_LM.R")
+source("~/project/OhnishiExtension/Data/format_data.R")
 
 #########
 #Function
@@ -35,9 +26,9 @@ set.seed(id)
 ################
 #Global Settings
 ################
-mcmc_samples<-10000
-burnin <- 5000
-thin <- 10
+mcmc_samples<-10
+burnin <- 5
+thin <- 1
 iters <- burnin:mcmc_samples
 iters <- iters[seq(1, mcmc_samples-burnin + thin, thin)]
 
@@ -61,7 +52,7 @@ beta <- list(beta)[rep(1,mcmc_samples)]
 sigma2 <- rep(NA, 3)
 sigma2 <- list(sigma2)[rep(1,mcmc_samples)]
 
-G <- matrix(NA, nrow=J, ncol=Nj)
+G <- rep(NA, sum(N))
 G <- list(G)[rep(1,mcmc_samples)]
 
 alpha <- matrix(NA, nrow=2, ncol=5)
@@ -112,33 +103,25 @@ for(k in 1:6){
   pi_mat[,k] <- 1.00/rowSums(exp(log_pi_mat_temp - log_pi_mat_temp[,k]))
 }
 
-for(j in 1:J){
-  for(i in 1:N[j]){
-    
-    if(Z[[j]][i] == 1 & D[[j]][i] == 1){
-      G[[1]][j, i] <- sample(c(1, 3, 4, 5, 6), size = 1, replace = TRUE)
+for(i in 1:sum(N)){
+    if(Z_long[i] == 1 & D_long[i] == 1){
+      G[[1]][i] <- sample(c(1, 3, 4, 5, 6), size = 1, replace = TRUE)
     }
     
-    if(Z[[j]][i] == 1 & D[[j]][i] == 0){
-      G[[1]][j, i] <- sample(c(2, 4, 6), size = 1, replace = TRUE)
+    if(Z_long[i] == 1 & D_long[i] == 0){
+      G[[1]][i] <- sample(c(2, 4, 6), size = 1, replace = TRUE)
     }
     
-    if(Z[[j]][i] == 0 & D[[j]][i] == 1){
-      G[[1]][j, i]<-sample(c(1, 5, 6), size = 1, replace = TRUE)
+    if(Z_long[i] == 0 & D_long[i] == 1){
+      G[[1]][i]<-sample(c(1, 5, 6), size = 1, replace = TRUE)
     }
     
-    if(Z[[j]][i] == 0 & D[[j]][i] == 0){
-      G[[1]][j, i]<-sample(c(2, 3, 5, 6), size = 1, replace = TRUE)
+    if(Z_long[i] == 0 & D_long[i] == 0){
+      G[[1]][i]<-sample(c(2, 3, 5, 6), size = 1, replace = TRUE)
     }
-    
-  }
 }
 
-G_long<-G[[1]][1,]
-for(j in 2:J){
-  G_long <- c(G_long,
-              G[[1]][j,])
-}
+G_long<-G[[1]]
 
 delta_h0[[1]] <- rep(0.00, 2)
 tau2_h0[[1]] <- 0.01
@@ -259,10 +242,7 @@ for(s in 2:mcmc_samples){
   G_a_long[(G_long == 2) | ((G_long == 4) & (a_long < h0[[s-1]])) | ((G_long == 6) & (a_long < h1[[s-1]]))] <- 2
   G_a_long[(G_long == 3) | ((G_long == 4) & (a_long >= h0[[s-1]])) | ((G_long == 5) & (a_long < l0[[s-1]])) | ((G_long == 6) & (a_long >= h1[[s-1]]) & (a_long < l1[[s-1]]))] <- 3
   
-  G[[s]][1,]<-G_long[1:N[1]]
-  for(j in 2:J){
-    G[[s]][j,]<-G_long[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
-  }
+  G[[s]]<-G_long
   
   ######
   #alpha
@@ -573,21 +553,21 @@ for(s in 2:mcmc_samples){
       for (i in 1:N[J]) {
         ij <- ij + 1
         ## Need to figure out G(eff.a)
-        if (G[[s]][j,i] %in% 1:3) {
-          G.eff.a <- G[[s]][j,i]
-        }  else if (G[[s]][j,i]==4) {
+        if (G[[s]][ij] %in% 1:3) {
+          G.eff.a <- G[[s]][ij]
+        }  else if (G[[s]][ij]==4) {
           if (eff.a < h0[[s]][ij]) {
             G.eff.a <- 2
           } else {
             G.eff.a <- 3
           }
-        } else if (G[[s]][j,i]==5) {
+        } else if (G[[s]][ij]==5) {
           if (eff.a < l0[[s]][ij]) {
             G.eff.a <- 3
           } else {
             G.eff.a <- 1
           }
-        } else if (G[[s]][j,i]==6) {
+        } else if (G[[s]][ij]==6) {
           if (eff.a < h1[[s]][ij]) {
             G.eff.a <- 2
           } else if (eff.a < l1[[s]][ij]) {
