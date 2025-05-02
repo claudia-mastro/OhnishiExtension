@@ -380,9 +380,9 @@ for(s in 2:mcmc_samples){
   G_a_long[(G_long == 2) | ((G_long == 4) & (a_long < h0[[s-1]])) | ((G_long == 6) & (a_long < h1[[s-1]]))] <- 2
   G_a_long[(G_long == 3) | ((G_long == 4) & (a_long >= h0[[s-1]])) | ((G_long == 5) & (a_long < l0[[s-1]])) | ((G_long == 6) & (a_long >= h1[[s-1]]) & (a_long < l1[[s-1]]))] <- 3
   
-  G[[1]][s,] <- G_long[1:N[1]]
+  G[[s]][1,] <- G_long[1:N[1]]
   for(j in 2:J){
-    G[[j]][s,] <- G_long[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
+    G[[s]][j,] <- G_long[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
   }
   
   ######
@@ -619,7 +619,7 @@ for(s in 2:mcmc_samples){
   
   for(i in 1:sum(N)){
     for(j in 1:sum(N)){
-      Sigma[[s]][[3]][i,j] <- exp(-chl[[s-1]][3]*abs(h1[[s]][i]-h1[[s]][j]))
+      Sigma[[s]][[3]][i,j] <- exp(-chl[[s-1]][3]*abs(h1[[s]][i]-h1[[s]][j]) - chl[[s-1]][4]*abs(l1[[s-1]][i]-l1[[s-1]][j]))
     }
   }
   
@@ -630,7 +630,7 @@ for(s in 2:mcmc_samples){
   #l1
   ###
   logit_l1_old <- logit_h1
-  h1[[s]] <- h1[[s-1]]
+  l1[[s]] <- l1[[s-1]]
   G_a_long_old <- G_a_long
   Sigma_old <- Sigma[[s-1]][[3]]
   Sigma_inv_old <- chol2inv(chol(Sigma_old))
@@ -642,13 +642,13 @@ for(s in 2:mcmc_samples){
         kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[3]])))%*%
         (c(t(beta[[6]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long_old == 1) | (D_long == 0 & G_a_long_old == 2) | (D_long == Z_long & G_a_long_old == 3))) +
-    dnorm(x = logit_h1_old,
-          mean = (v_long%*%delta_h1[[s-1]]),
-          sd = sqrt(tau2_h1[[s-1]]),
+    dnorm(x = logit_l1_old,
+          mean = (v_long%*%delta_l1[[s-1]]),
+          sd = sqrt(tau2_l1[[s-1]]),
           log = TRUE)
   
-  logit_h1 <- rnorm(n = sum(N), mean = logit_h1_old, sd = metrop_sd_h1)
-  h1[[s]] <- 1.00/(1.00 + exp(-logit_h1))
+  logit_l1 <- rnorm(n = sum(N), mean = logit_l1_old, sd = metrop_sd_l1)
+  l1[[s]] <- 1.00/(1.00 + exp(-logit_l1))
   
   G_a_long[(G_long == 1) | ((G_long == 5) & (a_long >= l0[[s]])) | ((G_long == 6) & (a_long >= l1[[s-1]]))] <- 1
   G_a_long[(G_long == 2) | ((G_long == 4) & (a_long < h0[[s]])) | ((G_long == 6) & (a_long < h1[[s]]))] <- 2
@@ -656,7 +656,7 @@ for(s in 2:mcmc_samples){
   
   for(i in 1:sum(N)){
     for(j in 1:sum(N)){
-      Sigma[[s]][[3]][i,j] <- exp(-chl[[s-1]][3]*abs(h1[[s]][i]-h1[[s]][j]))
+      Sigma[[s]][[3]][i,j] <- exp(-chl[[s-1]][3]*abs(h1[[s]][i]-h1[[s]][j]) - chl[[s-1]][4]*abs(l1[[s]][i]-l1[[s]][j]))
     }
   }
   
@@ -682,7 +682,7 @@ for(s in 2:mcmc_samples){
   
   for(i in 1:sum(N)){
     for(j in 1:sum(N)){
-      Sigma[[s]][[3]][i,j] <- exp(-chl[[s-1]][3]*abs(h1[[s]][i]-h1[[s]][j]))
+      Sigma[[s]][[3]][i,j] <- exp(-chl[[s-1]][3]*abs(h1[[s]][i]-h1[[s]][j]) - chl[[s-1]][4]*abs(l1[[s]][i]-l1[[s]][j]))
     }
   }
   
@@ -713,221 +713,112 @@ for(s in 2:mcmc_samples){
       c_k <- c(3,4)
     }
     
-    chl[s,c_k]<-chl[s-1,c_k]
+    chl[[s]][c_k]<-chl[[s-1]][c_k]
     
-    zdet <- det(Sigma[[s,k-3]])
-    if (zdet==0) zdet <- 1e-20             
-    denom<- sum(dnorm(x = Y_k,
-                      mean = diag(W_k%*%t(beta[[k]][[s]][G_long==k,])),
-                      sd = sqrt(sigma2[[s]][k]), log=TRUE)) +
-      -5/2*log(zdet)+
-      (-1/2*t(c(beta[[k]][[s]]-mu456[[k-3]][s,]))%*%
-         kronecker(chol2inv(col(Sigma[[s,k-3]])), chol2inv(col(omega[[s,k-3]])))%*%
-         c(beta[[k]][[s]]-mu456[[k-3]][s,])) +
-      sum(dgamma(chl[s,c_k], shape=1, scale=1, log=TRUE))
+    zdet <- det(Sigma_old)
+    if (zdet==0) zdet <- 1e-20 
+    mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][k-3,])
+    denom <- log(zdet) + (-1/2*t(c(t(beta[[k]][[s]]))-mu_vec)%*%
+                            kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[k-3]])))%*%
+                            (c(t(beta[[k]][[s]]))-mu_vec)) + 
+      sum(dgamma(chl[[s]][c_k], shape=1, scale=1, log=TRUE))
     
-    chl[s,c_k]<-rtruncnorm(1, a=0,
-                           mean=chl[(s-1),c_k],
-                           sd=metrop_sd_c[c_k])
+    lchl <- log(chl[[s-1]][c_k])
+    lchl_new <- rnorm(1, mean=lchl, sd=metrop_sd_c[c_k])
+    chl[[s]][c_k] <- exp(lchl_new)
     
     Sigma_new <- Sigma
     for(j in 1:sum(N)){
       for(i in 1:sum(N)){
         if (k==4) {
-          Sigma_new[[s,1]][i,j] <- exp(-chl[s,1]*abs(h0[s,i]-h0[s,j]))
+          Sigma_new[[s]][[1]][i,j] <- exp(-chl[[s]][1]*abs(h0[[s]][i]-h0[[s]][j]))
         } else if (k==5) {
-          Sigma_new[[s,2]][i,j] <- exp(-chl[s,2]*abs(l0[s,i]-l0[s,j]))
+          Sigma_new[[s]][[2]][i,j] <- exp(-chl[[s]][2]*abs(l0[[s]][i]-l0[[s]][j]))
         } else if (k==6) {
-          Sigma_new[[s,3]][i,j] <- exp(-chl[s,3]*abs(h1[s,i]-h1[s,j]) - chl[s,4]*abs(l1[s,i]-l1[s,j]))
+          Sigma_new[[s]][[3]][i,j] <- exp(-chl[[s]][3]*abs(h1[[s]][i]-h1[[s]][j]) - chl[[s]][4]*abs(l1[[s]][i]-l1[[s]][j]))
         }
       }
     }
-    tryCatch(
-      expr = {
-        Sigma_new_inv <- chol2inv(chol(Sigma_new[[s,k-3]],tol=1e-22))
-      },
-      error = {
-        Sigma_new_inv <- chol2inv(chol(nearPD(Sigma_new[[s,k-3]],base.matrix=TRUE)$mat))
-      }
-    )
-    cov_mu<- diag(5)/(sigma2_beta)
-    mu_sum<-0
-    for(j in 1:sum(N)){
-      for(i in 1:sum(N)){
-        mu_sum<-mu_sum + Sigma_new_inv[i,j]*omega_inv%*%beta[[k]][[s]][j,]
-        cov_mu<-cov_mu + Sigma_new_inv[i,j]*omega_inv
-      }
-    }
-    tryCatch(
-      expr = {
-        cov_mu <- chol2inv(chol(cov_mu))
-      },
-      error = {
-        cov_mu <- chol2inv(chol(nearPD(cov_mu, base.matrix = TRUE)$mat))
-      }
-    )
+
+    Sigma_new_inv <- chol2inv(chol(Sigma_new[[s]][[k-3]],tol=1e-22))
     
-    mean_mu<-cov_mu%*%mu_sum
-    mu456_new <- rmnorm(1, mean=mean_mu, varcov=cov_mu)
-    tryCatch(
-      expr = {
-        beta_new<-matrix(rmnorm(n = 1,
-                                mean = mu456_new,
-                                varcov = kronecker(Sigma_new[[s,k-3]], omega[[s, k-3]])),
-                         nrow=sum(N),
-                         ncol=5,
-                         byrow=TRUE)
-      },
-      error = {
-        beta_new<-matrix(rmnorm(n = 1,
-                                mean = mu456_new,
-                                varcov = nearPD(kronecker(Sigma_new[[s,k-3]], omega[[s, k-3]]), base.matrix = TRUE)$mat),
-                         nrow=sum(N),
-                         ncol=5,
-                         byrow=TRUE)
-      }
-    )
-    
-    
-    rate<-crossprod(Y_k - W_k%*%t(beta_new))/2.00 +
-      b_sigma2
-    shape<-length(Y_k)/2.00 +
-      a_sigma2
-    sigma2_new<-1.00/rgamma(n = 1,
-                            shape = shape,
-                            rate = rate)
-    omega_scale <- 0
-    for (j in 1:sum(N)) {
-      for (i in 1:sum(N)) {
-        omega_scale <- omega_scale +
-          (beta_new[i,]-mean_mu)%*%t(beta_new[j,]-mean_mu)*Sigma_new_inv[i,j]
-      }
-    }
-    omega_scale <- omega_scale + diag(5)
-    #omega_inv_new <- rwishart(sum(N)+6, solve(omega_scale))
-    #omega_new <- solve(omega_inv_new)
-    tryCatch(
-      expr = {
-        omega_new <- rinvwishart(sum(N)+6, omega_scale)
-      },
-      error = {
-        omega_new <- rinvwishart(sum(N)+6, nearPD(omega_scale, base.matrix=TRUE)$mat)
-      }
-    )
-    tryCatch(
-      expr = {
-        omega_new_inv <- chol2inv(chol(omega_new))
-      },
-      error = {
-        omega_new_inv <- chol2inv(chol(nearPD(omega_new, base.matrix = TRUE)$mat))
-      }
-    )
-    
-    zdet <- det(Sigma_new[[s,k-3]])
+    zdet <- det(Sigma_new[[s]][[k-3]])
     if (zdet==0) zdet <- 1e-20 
-    numer<- sum(dnorm(x = Y_k,
-                      mean = diag(W_k%*%t(beta_new[G_long==k,])),
-                      sd = sigma2_new, log=TRUE)) +
-      -5/2*log(zdet)+
-      (-1/2*t(c(beta_new-mu456_new))%*%
-         kronecker(Sigma_new_inv, omega_new_inv)%*%
-         c(beta_new-mu456_new)) +
-      sum(dgamma(chl[s,c_k], shape=1, scale=1, log=TRUE))
+    mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][k-3,])
+    numer <- log(zdet) + (-1/2*t(c(t(beta[[k]][[s]]))-mu_vec)%*%
+                            kronecker(chol2inv(col(Sigma_new[[s]][[k-3]])), chol2inv(col(omega2[[s]][[k-3]])))%*%
+                            (c(t(beta[[k]][[s]]))-mu_vec)) +
+      sum(dgamma(chl[[s]][c_k], shape=1, scale=1, log=TRUE))
     
-    accept<-1
-    ratio<-exp(numer - denom)
-    uni_draw<-runif(n = 1,
-                    min = 0.00,
-                    max = 1.00)
+    accept <- 1
+    ratio <- exp(numer - denom)
+    uni_draw<-runif(n = 1, min = 0.00,max = 1.00)
+    
     if(ratio > uni_draw){
-      
       Sigma <- Sigma_new
-      beta[[k]][[s]] <- beta_new
-      mu456[[k-3]][s,] <- mu456_new
-      omega[[s,k-3]] <- omega_new
-      sigma2[[s]][k] <- sigma2_new
+      Sigma_inv <- Sigma_new_inv
       accept<-0
-      
     } else {
-      chl[s,c_k] <- chl[s-1,c_k]
+      chl[[s]][c_k] <- chl[[s-1]][c_k]
     }
     
     acctot_c[k]<-acctot_c[k] + accept
-    
   }
   
   
   #########
   #delta_h0
   #########
-  cov_delta_h0<-chol2inv(chol(crossprod(v_long)/tau2_h0[s-1] + diag(2)/sigma2_delta))
-  mu_delta_h0<-cov_delta_h0%*%(crossprod(v_long, logit_h0))/tau2_h0[s-1]
-  delta_h0[s,]<-rmnorm(n = 1,
-                       mean = mu_delta_h0,
-                       varcov = cov_delta_h0)
+  cov_delta_h0 <- chol2inv(chol(crossprod(v_long)/tau2_h0[[s-1]] + diag(2)/sigma2_delta))
+  mu_delta_h0 <- cov_delta_h0%*%(crossprod(v_long, logit_h0))/tau2_h0[[s-1]]
+  delta_h0[[s]] <- rmnorm(n = 1, mean = mu_delta_h0, varcov = cov_delta_h0)
   
   ########
   #tau2_h0
   ########
-  rate<-crossprod(logit_h0 - v_long%*%delta_h0[s,])/2.00 +
-    b_tau2
-  tau2_h0[s]<-1.00/rgamma(n = 1,
-                          shape = shape_tau2_update,
-                          rate = rate)
+  rate <- crossprod(logit_h0 - v_long%*%delta_h0[[s]])/2.00 + b_tau2
+  tau2_h0[[s]] <- 1.00/rgamma(n = 1, shape = shape_tau2_update, rate = rate)
   
   #########
   #delta_l0
   #########
-  cov_delta_l0<-chol2inv(chol(crossprod(v_long)/tau2_l0[s-1] + diag(2)/sigma2_delta))
-  mu_delta_l0<-cov_delta_l0%*%(crossprod(v_long, logit_l0))/tau2_l0[s-1]
-  delta_l0[s,]<-rmnorm(n = 1,
-                       mean = mu_delta_l0,
-                       varcov = cov_delta_l0)
+  cov_delta_l0 <- chol2inv(chol(crossprod(v_long)/tau2_l0[[s-1]] + diag(2)/sigma2_delta))
+  mu_delta_l0 <- cov_delta_l0%*%(crossprod(v_long, logit_l0))/tau2_l0[[s-1]]
+  delta_l0[[s]] <- rmnorm(n = 1, mean = mu_delta_l0, varcov = cov_delta_l0)
   
   ########
   #tau2_l0
   ########
-  rate<-crossprod(logit_l0 - v_long%*%delta_l0[s,])/2.00 +
-    b_tau2
-  tau2_l0[s]<-1.00/rgamma(n = 1,
-                          shape = shape_tau2_update,
-                          rate = rate)
+  rate <- crossprod(logit_l0 - v_long%*%delta_l0[[s]])/2.00 + b_tau2
+  tau2_l0[[s]] <- 1.00/rgamma(n = 1, shape = shape_tau2_update, rate = rate)
   
   #########
   #delta_h1
   #########
-  cov_delta_h1<-chol2inv(chol(crossprod(v_long)/tau2_h1[s-1] + diag(2)/sigma2_delta))
-  mu_delta_h1<-cov_delta_h0%*%(crossprod(v_long, logit_h1))/tau2_h1[s-1]
-  delta_h1[s,]<-rmnorm(n = 1,
-                       mean = mu_delta_h1,
-                       varcov = cov_delta_h1)
+  cov_delta_h1 <- chol2inv(chol(crossprod(v_long)/tau2_h1[[s-1]] + diag(2)/sigma2_delta))
+  mu_delta_h1<-cov_delta_h0%*%(crossprod(v_long, logit_h1))/tau2_h1[[s-1]]
+  delta_h1[[s]] <- rmnorm(n = 1, mean = mu_delta_h1, varcov = cov_delta_h1)
   
   ########
   #tau2_h1
   ########
-  rate<-crossprod(logit_h1 - v_long%*%delta_h1[s,])/2.00 +
-    b_tau2
-  tau2_h1[s]<-1.00/rgamma(n = 1,
-                          shape = shape_tau2_update,
-                          rate = rate)
+  rate <- crossprod(logit_h1 - v_long%*%delta_h1[[s]])/2.00 + b_tau2
+  tau2_h1[[s]] <- 1.00/rgamma(n = 1, shape = shape_tau2_update, rate = rate)
   
   #########
   #delta_l1
   #########
-  cov_delta_l1<-chol2inv(chol(crossprod(v_long)/tau2_l1[s-1] + diag(2)/sigma2_delta))
-  mu_delta_l1<-cov_delta_l1%*%(crossprod(v_long, logit_l1))/tau2_l1[s-1]
-  delta_l1[s,]<-rmnorm(n = 1,
+  cov_delta_l1 <- chol2inv(chol(crossprod(v_long)/tau2_l1[[s-1]] + diag(2)/sigma2_delta))
+  mu_delta_l1 <- cov_delta_l1%*%(crossprod(v_long, logit_l1))/tau2_l1[[s-1]]
+  delta_l1[[s]] <- rmnorm(n = 1,
                        mean = mu_delta_l1,
                        varcov = cov_delta_l1)
   
   ########
   #tau2_l1
   ########
-  rate<-crossprod(logit_l1 - v_long%*%delta_l1[s,])/2.00 +
-    b_tau2
-  tau2_l1[s]<-1.00/rgamma(n = 1,
-                          shape = shape_tau2_update,
-                          rate = rate)
+  rate <- crossprod(logit_l1 - v_long%*%delta_l1[[s]])/2.00 + b_tau2
+  tau2_l1[[s]] <- 1.00/rgamma(n = 1, shape = shape_tau2_update, rate = rate)
   
   print("#####")
   print(round(100*(s/mcmc_samples), 2))
@@ -949,24 +840,24 @@ for(s in 2:mcmc_samples){
       for (i in 1:N[J]) {
         ij <- ij + 1
         ## Need to figure out G(eff.a)
-        if (G[[j]][s,i] %in% 1:3) {
-          G.eff.a <- G[[j]][s,i]
-        }  else if (G[[j]][s,i]==4) {
-          if (eff.a < h0[s,ij]) {
+        if (G[[s]][j,i] %in% 1:3) {
+          G.eff.a <- G[[s]][j,i]
+        }  else if (G[[s]][j,i]==4) {
+          if (eff.a < h0[[s]][ij]) {
             G.eff.a <- 2
           } else {
             G.eff.a <- 3
           }
-        } else if (G[[j]][s,i]==5) {
-          if (eff.a < l0[s,ij]) {
+        } else if (G[[s]][j,i]==5) {
+          if (eff.a < l0[[s]][ij]) {
             G.eff.a <- 3
           } else {
             G.eff.a <- 1
           }
-        } else if (G[[j]][s,i]==6) {
-          if (eff.a < h1[s,ij]) {
+        } else if (G[[s]][j,i]==6) {
+          if (eff.a < h1[[s]][ij]) {
             G.eff.a <- 2
-          } else if (eff.a < l1[s,ij]) {
+          } else if (eff.a < l1[[s]][ij]) {
             G.eff.a <- 3
           } else {
             G.eff.a <- 1
@@ -980,7 +871,7 @@ for(s in 2:mcmc_samples){
         }
         
         if (k %in% 1:3) {
-          beta_k <- beta[[k]][s,]
+          beta_k <- beta[[k]][[s]]
         } else if (k %in% 4:6) {
           beta_k <- beta[[k]][[s]]
         }
@@ -992,18 +883,18 @@ for(s in 2:mcmc_samples){
         W0p[5] <- W0[5] <- 0
         W1[5] <- 1
         mu0<-W0%*%t(beta_k)
-        var0<-sigma2[s,G.eff.a]
+        var0<-sigma2[[s]][G.eff.a]
         Y0[ij]<-rnorm(n = 1,
                       mean = mu0,
                       sd = sqrt(var0)) 
         mu1<-W1%*%t(beta_k)
-        var1<-sigma2[s,G.eff.a]
+        var1<-sigma2[[s]][G.eff.a]
         Y1[ij]<-rnorm(n = 1,
                       mean = mu1,
                       sd = sqrt(var1))
         
         mu0p<-W0p%*%t(beta_k) 
-        var0p<-sigma2[s,G.eff.a]
+        var0p<-sigma2[[s]][G.eff.a]
         Y0p[ij]<-rnorm(n = 1,
                        mean = mu0p,
                        sd = sqrt(var0p))        
