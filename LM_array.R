@@ -12,7 +12,8 @@ Nj <- as.integer(args[3])
 print(Nj)
 nalpha <- as.integer(args[4])
 print(nalpha)
-v <- paste0("LM_4.30_nalpha", nalpha)
+v <- paste0("LM_5.2_J", J, "Nj", Nj, "Nalpha", nalpha)
+#v <- "LM_5.1_bigspace"
 print(v)
 source("~/project/OhnishiExtension/JWCode/Data_Simulation_LM.R")
 
@@ -602,7 +603,7 @@ for(s in 2:mcmc_samples){
         } else {
           C[ij] <- 0
         }
-        if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
+        if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long[j] == 3) {
           if (Z_long[j] == 0) {
             Y0 <- Y_long[j]
             W0p <- W1 <- W[ij,]

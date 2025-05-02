@@ -11,7 +11,7 @@ N<-rep(Nj,
        times = J)
 
 M<-J
-a<-sample(runif(n = M),
+a<-sample(seq(0, 1, 1/(nalpha-1)),
           size = J,
           replace = TRUE)
 Z<-list(0)
@@ -42,9 +42,9 @@ for(j in 2:J){
 ###########
 #Predictors
 ###########
+set.seed(22)
 x_long<-rnorm(n = sum(N))
-q_long<-cbind(1, 
-              x_long)
+q_long<-cbind(1, x_long)
 v_long<-q_long
 
 ################
@@ -57,7 +57,8 @@ sigma2_true<-rep(NA,
                  times = 3)
 for(k in 1:3){
 
-   beta_true[k,]<-rnorm(n = 5)
+   beta_true[k,]<-c(rnorm(n = 2), rnorm(n=1, mean=2, sd=0.5),
+                    rnorm(n=1, mean=1, sd=0.5), rnorm(n=1, mean=2, sd=0.5))
    sigma2_true[k]<-runif(n = 1,
                          min = 0.00,
                          max = 0.10)
@@ -167,23 +168,6 @@ for(j in 2:J){
    }
 
 W<-cbind(1, x_long, S_long, a_long, Z_long)
-
-Y_long<-rep(NA,
-            time = sum(N))
-for(j in 1:sum(N)){
-
-   mu<-W[j,]%*%beta_true[G_a_long_true[j],]
-   var<-sigma2_true[G_a_long_true[j]]
-   Y_long[j]<-rnorm(n = 1,
-                    mean = mu,
-                    sd = sqrt(var))
-
-   }
-Y<-list(0)
-Y[[1]]<-Y_long[1:N[1]]
-for(j in 2:J){
-   Y[[j]]<-Y_long[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
-   }
    
 Y0_long <- rep(NA, sum(N))
 Y1_long <- rep(NA, sum(N))
@@ -195,70 +179,24 @@ eff.s <- 0.4
 eff.sp <- 0.8
 
 for(j in 1:sum(N)) {
-  if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
-    CADE.G[j] <- 3
-    if (Z_long[j] == 0) {
-      Y0_long[j] <- Y_long[j]
-      W1 <- W[j, ]
-      W1[3] <- eff.s
-      W1[4] <- eff.a
-      W1[5] <- 1
-      mu <- W1 %*% beta_true[G_a_long_true[j], ]
-      var <- sigma2_true[G_a_long_true[j]]
-      Y1_long[j] <- rnorm(n = 1,
-                          mean = mu,
-                          sd = sqrt(var))
-      
-      W0p <- W[j, ]
-      W0p[3] <- eff.sp
-      W0p[4] <- eff.a
-      W0p[5] <- 0
-      mu0p <- W0p %*% beta_true[G_a_long_true[j], ]
-      var0p <- sigma2_true[G_a_long_true[j]]
-      Y0p_long[j] <- rnorm(n = 1,
-                           mean = mu0p,
-                           sd = sqrt(var0p))
-    } else {
-      Y1_long[j] <- Y_long[j]
-      W0 <- W[j, ]
-      W0[3] <- eff.s
-      W0[4] <- eff.a
-      W0[5] <- 0
-      mu <- W0 %*% beta_true[G_a_long_true[j], ]
-      var <- sigma2_true[G_a_long_true[j]]
-      Y0_long[j] <- rnorm(n = 1,
-                          mean = mu,
-                          sd = sqrt(var))
-      
-      W0p <- W[j, ]
-      W0p[3] <- eff.s
-      W0p[4] <- eff.a
-      W0p[5] <- 0
-      mu0p <- W0p %*% beta_true[G_a_long_true[j], ]
-      var0p <- sigma2_true[G_a_long_true[j]]
-      Y0p_long[j] <- rnorm(n = 1,
-                           mean = mu0p,
-                           sd = sqrt(var0p))
-    }
-  } else {
-    if (G_a_long_true[j] %in% 1:3) {
-      CADE.G[j] <- G_a_long_true[j]
-    }  else if (G_a_long_true[j] == 4) {
-      if (eff.a < h0[j]) {
+    if (G_long_true[j] %in% 1:3) {
+      CADE.G[j] <- G_long_true[j]
+    }  else if (G_long_true[j] == 4) {
+      if (eff.a < h0_true[j]) {
         CADE.G[j] <- 2
       } else {
         CADE.G[j] <- 3
       }
-    } else if (G_a_long_true[j] == 5) {
-      if (eff.a < l0[j]) {
+    } else if (G_long_true[j] == 5) {
+      if (eff.a < l0_true[j]) {
         CADE.G[j] <- 3
       } else {
         CADE.G[j] <- 1
       }
-    } else if (G_a_long_true[j] == 6) {
-      if (eff.a < h1[j]) {
+    } else if (G_long_true[j] == 6) {
+      if (eff.a < h1_true[j]) {
         CADE.G[j] <- 2
-      } else if (eff.a < l1[j]) {
+      } else if (eff.a < l1_true[j]) {
         CADE.G[j] <- 3
       } else {
         CADE.G[j] <- 1
@@ -291,7 +229,32 @@ for(j in 1:sum(N)) {
     Y0p_long[j] <- rnorm(n = 1,
                          mean = mu0p,
                          sd = sqrt(var0p))
+}
+
+Y_long<-rep(NA,
+            time = sum(N))
+
+for(j in 1:sum(N)){
+  if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
+    if (Z_long[j]==0) {
+      Y_long[j] <- Y0_long[j]
+    } else if (Z_long[j]==1) {
+      Y_long[j] <- Y1_long[j]
+    }
+  } else if (a_long[j] == eff.a & S_long[j] == eff.sp & G_a_long_true[j] == 3 & Z_long[j]==0) {
+    Y_long[j] <- Y0p_long[j]
+  } else {
+    mu<-W[j,]%*%beta_true[G_a_long_true[j],]
+    var<-sigma2_true[G_a_long_true[j]]
+    Y_long[j]<-rnorm(n = 1,
+                     mean = mu,
+                     sd = sqrt(var))
   }
+}
+Y<-list(0)
+Y[[1]]<-Y_long[1:N[1]]
+for(j in 2:J){
+  Y[[j]]<-Y_long[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
 }
 
 CADE.true <- sum((CADE.G==3)*(Y1_long - Y0_long))/(sum(CADE.G==3))

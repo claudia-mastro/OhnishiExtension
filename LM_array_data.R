@@ -21,14 +21,14 @@ logSumExp<-function(x){
 ##############
 #Seed
 ##############
-set.seed(id)
+set.seed(1222)
 
 ################
 #Global Settings
 ################
-mcmc_samples<-10
-burnin <- 5
-thin <- 1
+mcmc_samples<-10000
+burnin <- 5000
+thin <- 10
 iters <- burnin:mcmc_samples
 iters <- iters[seq(1, mcmc_samples-burnin + thin, thin)]
 
@@ -550,7 +550,7 @@ for(s in 2:mcmc_samples){
     eff.sp <- 0.8
     ij <- 0
     for (j in 1:J) {
-      for (i in 1:N[J]) {
+      for (i in 1:N[j]) {
         ij <- ij + 1
         ## Need to figure out G(eff.a)
         if (G[[s]][ij] %in% 1:3) {
@@ -582,7 +582,7 @@ for(s in 2:mcmc_samples){
         } else {
           C[ij] <- 0
         }
-        if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
+        if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long[j] == 3) {
           if (Z_long[j] == 0) {
             Y0 <- Y_long[j]
             W0p <- W1 <- W[ij,]
@@ -656,41 +656,22 @@ for(s in 2:mcmc_samples){
   }
 }
 print("saving")
-print(paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CADE",
-             id, ".rds"))
-saveRDS(CADE, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CADE",
-                     id, ".rds"))
-saveRDS(CASE, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CASE",
-                     id, ".rds"))
-saveRDS(beta, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/beta",
-                     id, ".rds"))
-saveRDS(sigma2, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/sigma2",
-                       id, ".rds"))
-saveRDS(G, paste0("/home/cim24/project/OhnishiExtension/Results/", v, "/G",
-                  id, ".rds"))
-saveRDS(alpha, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/alpha",
-                      id, ".rds"))
-saveRDS(h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/h0",
-                   id, ".rds"))
-saveRDS(l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/l0",
-                   id, ".rds"))
-saveRDS(h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/h1",
-                   id, ".rds"))
-saveRDS(l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/l1",
-                   id, ".rds"))
-saveRDS(delta_h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltah0",
-                         id, ".rds"))
-saveRDS(delta_l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltal0",
-                         id, ".rds"))
-saveRDS(delta_h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltah1",
-                         id, ".rds"))
-saveRDS(delta_l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltal1",
-                         id, ".rds"))
-saveRDS(tau2_h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2h0",
-                        id, ".rds"))
-saveRDS(tau2_l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2l0",
-                        id, ".rds"))
-saveRDS(tau2_h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2h1",
-                        id, ".rds"))
-saveRDS(tau2_l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2l1",
-                        id, ".rds"))
+print(paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CADE.rds"))
+saveRDS(CADE, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CADE.rds"))
+saveRDS(CASE, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/CASE.rds"))
+saveRDS(beta, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/beta.rds"))
+saveRDS(sigma2, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/sigma2.rds"))
+saveRDS(G, paste0("/home/cim24/project/OhnishiExtension/Results/", v, "/G.rds"))
+saveRDS(alpha, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/alpha.rds"))
+saveRDS(h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/h0.rds"))
+saveRDS(l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/l0.rds"))
+saveRDS(h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/h1.rds"))
+saveRDS(l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/l1.rds"))
+saveRDS(delta_h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltah0.rds"))
+saveRDS(delta_l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltal0.rds"))
+saveRDS(delta_h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltah1.rds"))
+saveRDS(delta_l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/deltal1.rds"))
+saveRDS(tau2_h0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2h0.rds"))
+saveRDS(tau2_l0, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2l0.rds"))
+saveRDS(tau2_h1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2h1.rds"))
+saveRDS(tau2_l1, paste0("/home/cim24/project/OhnishiExtension/Results/", v,"/tau2l1.rds"))

@@ -7,7 +7,8 @@ set.seed(id)
 #Global Settings
 ################
 J<-20
-N<-rep(25,
+Nj <- 25
+N<-rep(Nj,
        times = J)
 
 M<-3

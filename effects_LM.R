@@ -80,7 +80,7 @@ CADE.A <- function(alpha, R, h4, l5, h6, l6, beta, sig2, mc_iter) {
   return(mean(eff))
 }
 
-CADE.S <- function(S, R, h4, l5, h6, l6, beta, sig2) {
+CADE.S <- function(s, R, h4, l5, h6, l6, beta, sig2) {
   
   eff <- rep(NA, length(unique(a)))
   i <- 0
@@ -96,10 +96,10 @@ CADE.S <- function(S, R, h4, l5, h6, l6, beta, sig2) {
     
     for (n in 1:sum(N)) {
       W0 <- W1 <- W[n,]
-      W0[n,3] <- W1[n,3] <- S
-      W0[n,4] <- W1[n,4] <- alpha
-      W0[n,5] <- 0
-      W1[n,5] <- 1
+      W0[3] <- W1[3] <- s
+      W0[4] <- W1[4] <- alpha
+      W0[5] <- 0
+      W1[5] <- 1
       
       mu0<-W0%*%beta[R_a_long[n],]
       var0<-sig2[R_a_long[n]]
@@ -109,17 +109,17 @@ CADE.S <- function(S, R, h4, l5, h6, l6, beta, sig2) {
       Y0[n] <- rnorm(n = 1, mean = mu0, sd = sqrt(var0))
       
       Y1[n]<-rnorm(n = 1, mean = mu1, sd = sqrt(var1))   
-      i <- i + 1
     }
-    eff[i] <- (sum(Y1 - Y0)*R_a_long==3)/sum(R_a_long==3)
+    i <- i + 1
+    eff[i] <- (sum((Y1 - Y0)*(R_a_long==3)))/sum(R_a_long==3)
   }
   return(mean(eff))
 }
 
-CASE.S <- function(S, Sp, Z, G, R, h4, l5, h6, l6, phi, theta, mu, sig2, psi2) {
+CASE.S <- function(s, Sp, Z, g, R, h4, l5, h6, l6, beta, sig2) {
   
   eff <- rep(NA, length(a))
-  
+  i <- 0
   for (alpha in a) {
     ## Calc R(alpha)
     R_a_long <- rep(0, sum(N))
@@ -132,28 +132,29 @@ CASE.S <- function(S, Sp, Z, G, R, h4, l5, h6, l6, phi, theta, mu, sig2, psi2) {
     
     for (n in 1:sum(N)) {
       W0 <- W1 <- W[n,]
-      W0[n,3] <- S
-      W1[n,3] <- Sp
-      W0[n,4] <- W1[n,4] <- alpha
-      W0[n,5] <- Z
-      W1[n,5] <- Z
+      W0[3] <- Sp
+      W1[3] <- s
+      W0[4] <- W1[4] <- alpha
+      W0[5] <- Z
+      W1[5] <- Z
       
       mu0<-W0%*%beta[R_a_long[n],]
       var0<-sig2[R_a_long[n]]
       mu1<-W1%*%beta[R_a_long[n],]
       var1<-sig2[R_a_long[n]]
       
-      Y0[n] <- rnorm(n = 1, mean = mu[R[n]] + theta0[n], 
-                     sd = sqrt(sig2[R[n]]))
-      Y1[n] <- rnorm(n = 1, mean = mu[R[n]] + theta0[n], 
-                     sd = sqrt(sig2[R[n]]))      
+      Y0[n] <- rnorm(n = 1, mean = mu0, 
+                     sd = sqrt(var0))
+      Y1[n] <- rnorm(n = 1, mean = mu1, 
+                     sd = sqrt(var1))      
     }
-    eff[i] <- (sum(Y1 - Y0)*R_a_long==G)/sum(R_a_long==G)
+    i <- i + 1
+    eff[i] <- (sum((Y1 - Y0)*(R_a_long==g)))/sum(R_a_long==g)
   }
   return(mean(eff))
 }
 
-CADE.CASE <- function(alpha, S, Sp, Z, R, h4, l5, h6, l6, phi, theta, mu, sig2, psi2) {
+CADE.CASE <- function(alpha, s, Sp, Z, R, h4, l5, h6, l6, phi, theta, mu, sig2, psi2) {
   Y1 <- rep(NA, sum(N))
   Y0 <- rep(NA, sum(N))
   Y0p <- rep(NA, sum(N))
@@ -171,7 +172,7 @@ CADE.CASE <- function(alpha, S, Sp, Z, R, h4, l5, h6, l6, phi, theta, mu, sig2, 
                 calcSigma(sum(N), phi[,6], Whl[[6]]))
   
   eff.a <- alpha
-  eff.s <- S
+  eff.s <- s
   eff.sp <- Sp
   ij <- 0
   for (j in 1:J) {
@@ -209,12 +210,12 @@ CADE.CASE <- function(alpha, S, Sp, Z, R, h4, l5, h6, l6, phi, theta, mu, sig2, 
       }
       
       if (C[ij]==1) {
-        W0p <- W0 <- W1 <- Whl[[R[ij]]]
-        W0[ij,2] <- W1[ij,2] <- eff.s
-        W0p[ij,2] <- eff.sp
-        W0p[ij,3] <- W0[ij,3] <- W1[ij,3] <- eff.a
-        W0p[ij,4] <- W0[ij,4] <- 0
-        W1[ij,4] <- 1
+        W0p <- W0 <- W1 <- W[ij,]
+        W0[2] <- W1[2] <- eff.s
+        W0p[2] <- eff.sp
+        W0p[3] <- W0[3] <- W1[3] <- eff.a
+        W0p[4] <- W0[4] <- 0
+        W1[4] <- 1
         
         Sig0 <- updateSigma(sum(N), phi[,R[ij]], W0, Sigma[[R[ij]]], ij)
         theta0 <- rmnorm(1, mean = 0, varcov = psi2[R[ij]]*Sig0)
