@@ -569,26 +569,23 @@ for(s in 2:mcmc_samples){
     eff.a <- 0.8
     eff.s <- 0.4
     eff.sp <- 0.8
-    ij <- 0
-    for (j in 1:J) {
-      for (i in 1:N[J]) {
-        ij <- ij + 1
+    for (ij in 1:sum(N)) {
         ## Need to figure out G(eff.a)
-        if (G[[s]][j,i] %in% 1:3) {
-          G.eff.a <- G[[s]][j,i]
-        }  else if (G[[s]][j,i]==4) {
+        if (G_long[ij] %in% 1:3) {
+          G.eff.a <- G_long[ij]
+        }  else if (G_long[ij]==4) {
           if (eff.a < h0[[s]][ij]) {
             G.eff.a <- 2
           } else {
             G.eff.a <- 3
           }
-        } else if (G[[s]][j,i]==5) {
+        } else if (G_long[ij]==5) {
           if (eff.a < l0[[s]][ij]) {
             G.eff.a <- 3
           } else {
             G.eff.a <- 1
           }
-        } else if (G[[s]][j,i]==6) {
+        } else if (G_long[ij]==6) {
           if (eff.a < h1[[s]][ij]) {
             G.eff.a <- 2
           } else if (eff.a < l1[[s]][ij]) {
@@ -603,9 +600,9 @@ for(s in 2:mcmc_samples){
         } else {
           C[ij] <- 0
         }
-        if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long[j] == 3) {
-          if (Z_long[j] == 0) {
-            Y0 <- Y_long[j]
+        if (a_long[ij] == eff.a & S_long[ij] == eff.s) {
+          if (Z_long[ij] == 0) {
+            Y0[ij] <- Y_long[ij]
             W0p <- W1 <- W[ij,]
             W1[3] <- eff.s
             W0p[3] <- eff.sp
@@ -624,8 +621,8 @@ for(s in 2:mcmc_samples){
             Y0p[ij]<-rnorm(n = 1,
                            mean = mu0p,
                            sd = sqrt(var0p))  
-          } else if (Z_long[j]==1) {
-          Y1 <- Y_long[j]
+          } else if (Z_long[ij]==1) {
+          Y1[ij] <- Y_long[ij]
           W0p <- W0 <- W[ij,]
           W0[3] <- eff.s
           W0p[3] <- eff.sp
@@ -669,7 +666,6 @@ for(s in 2:mcmc_samples){
         Y0p[ij]<-rnorm(n = 1,
                        mean = mu0p,
                        sd = sqrt(var0p)) 
-        }
       }
     }
     CADE[s] <- sum(C*(Y1-Y0))/sum(C)
