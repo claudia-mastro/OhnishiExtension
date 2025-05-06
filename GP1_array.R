@@ -77,7 +77,6 @@ mu456 <- list(mu456)[rep(1,mcmc_samples)]
 sigma2 <- rep(NA, 6)
 sigma2 <- list(sigma2)[rep(1,mcmc_samples)]
 
-
 omega2 <- replicate(3, matrix(NA, nrow = 5, ncol = 5), simplify=FALSE)
 omega2 <- list(omega2)[rep(1,mcmc_samples)]
 
@@ -89,13 +88,11 @@ Sigma <- list(Sigma)[rep(1,mcmc_samples)]
 chl <- rep(NA, 4)
 chl <- list(chl)[rep(1,mcmc_samples)]
 
-
 G <- matrix(NA, nrow=J, ncol=Nj)
 G <- list(G)[rep(1,mcmc_samples)]
 
 alpha <- matrix(NA, nrow=5, ncol=2)
 alpha <- list(alpha)[rep(1,mcmc_samples)]
-
 
 h0 <- l0 <- h1 <- l1 <- rep(NA, sum(N))
 h0 <- list(h0)[rep(1,mcmc_samples)]
@@ -226,6 +223,11 @@ for(i in 1:sum(N)){
   }
 }
 
+W_star <- matrix(0, nrow=sum(N), ncol=5*sum(N))
+for (w in 1:nrow(W)) {
+  W_star[w,((w-1)*5 + 1):((w-1)*5 + 5)] <- W[w,]
+}
+
 ####################
 #Metropolis Settings
 ####################
@@ -281,18 +283,13 @@ for(s in 2:mcmc_samples){
     omega_inv <- chol2inv(chol(omega2[[s-1]][[k-3]]))
     Sigma_inv <- chol2inv(chol(Sigma[[s-1]][[k-3]]))
     
-    W_star <- matrix(0, nrow=sum(N), ncol=5*sum(N))
-    for (w in which(G_long==k)) {
-      W_star[w,((w-1)*5 + 1):((w-1)*5 + 5)] <- W[w,]
-    }
-    
-    W_k_star <- W_star[(G_long==k),]
+    W_k_star <- W_star[(G_long==k), ,drop=FALSE]
     
     cov_beta <- chol2inv(chol(crossprod(W_k_star)/sigma2[[s-1]][k] + 
                                 kronecker(Sigma_inv, omega_inv)))
     mu_beta <- cov_beta%*%(crossprod(W_k_star, Y_k)/sigma2[[s-1]][k] + 
-                             kronecker(Sigma_inv, omega_inv)%*%
-                             kronecker(matrix(1, nrow=sum(N)), mu456[[s-1]][k-3,]))
+                             kronecker(Sigma_inv%*%matrix(1, nrow=sum(N)), 
+                                       omega_inv%*%mu456[[s-1]][k-3,]))
     
     beta[[k]][[s]] <- matrix(rmnorm(n=1, mean=mu_beta, varcov=cov_beta),
                              nrow=sum(N), ncol=5, byrow=TRUE)
@@ -321,7 +318,7 @@ for(s in 2:mcmc_samples){
       }
     }
     omega_scale <- chol2inv(chol(omega_scale + diag(5)))
-    omega_inv <- rinvwishart(sum(N)+6, omega_scale)
+    omega_inv <- rwishart(sum(N)+6, omega_scale)
     omega2[[s]][[k-3]] <- chol2inv(chol(omega_inv))
   }
   
@@ -903,12 +900,27 @@ for(s in 2:mcmc_samples){
     CADE[s] <- sum(C*(Y1-Y0))/sum(C)
     CASE[s] <- sum(C*(Y0-Y0p))/sum(C)
   }
-  if (s %in% c(200, 500, 1000, 1500, 2000, 2500, 5000)){
-    write.csv(cbind(CADE, CASE), 
-              paste0("/home/cim24/project/OhnishiExtension/Results/GPCode_12_27_i", s, ".csv"))
-  }
 }
-save.image(file="/home/cim24/project/OhnishiExtension/JWCode/GP_full.RData")
-#write.csv(cbind(CADE, CASE), "/home/cim24/project/OhnishiExtension/Results/GPCode_12_27_10k.csv")
-#write.csv(chl, "/home/cim24/project/OhnishiExtension/Results/GPCode_12_27_chl.csv")
+saveRDS(beta, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/beta",
+                      id, ".rds"))
+saveRDS(sigma2, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/sig2",
+                     id, ".rds"))
+saveRDS(omega2, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/omega2",
+                       id, ".rds"))
+saveRDS(mu456, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/mu",
+                   id, ".rds"))
+saveRDS(G, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/G",
+                  id, ".rds"))
+saveRDS(chl, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/c",
+                  id, ".rds"))
+saveRDS(logit_h0, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/h4",
+                         id, ".rds"))
+saveRDS(logit_l0, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/l5",
+                         id, ".rds"))
+saveRDS(logit_h1, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/h6",
+                         id, ".rds"))
+saveRDS(logit_l1,paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/l6",
+                        id, ".rds"))
+
+
 
