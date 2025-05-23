@@ -48,7 +48,7 @@ sigma2_mu<-diag(rep(100^2,5))
 omega_v <- 6
 oemga_n <- diag(rep(1,5))
 a_c <- 10
-b_c <- 10
+b_c <- 1/10
 
 shape_tau2_update<-sum(N)/2.00 +
   a_tau2
@@ -280,16 +280,15 @@ for(s in 2:mcmc_samples){
     Y_k <- Y_long[G_long == k]
     W_k <- W[(G_long == k), ,drop=FALSE]
     
-    omega_inv <- chol2inv(chol(omega2[[s-1]][[k-3]]))
     Sigma_inv <- chol2inv(chol(Sigma[[s-1]][[k-3]]))
     
     W_k_star <- W_star[(G_long==k), ,drop=FALSE]
     
     cov_beta <- chol2inv(chol(crossprod(W_k_star)/sigma2[[s-1]][k] + 
-                                kronecker(Sigma_inv, omega_inv)))
+                                kronecker(Sigma_inv, omega2[[s-1]][[k-3]])))
     mu_beta <- cov_beta%*%(crossprod(W_k_star, Y_k)/sigma2[[s-1]][k] + 
                              kronecker(Sigma_inv%*%matrix(1, nrow=sum(N)), 
-                                       omega_inv%*%mu456[[s-1]][k-3,]))
+                                       omega2[[s-1]][[k-3]]%*%mu456[[s-1]][k-3,]))
     
     beta[[k]][[s]] <- matrix(rmnorm(n=1, mean=mu_beta, varcov=cov_beta),
                              nrow=sum(N), ncol=5, byrow=TRUE)
@@ -298,8 +297,8 @@ for(s in 2:mcmc_samples){
     mu_sum <- 0
     for(j in 1:sum(N)){
       for(i in 1:sum(N)){
-        mu_sum<-mu_sum + Sigma_inv[i,j]*omega_inv%*%beta[[k]][[s]][j,]
-        cov_mu<-cov_mu + Sigma_inv[i,j]*omega_inv
+        mu_sum<-mu_sum + Sigma_inv[i,j]*omega2[[s-1]][[k-3]]%*%beta[[k]][[s]][j,]
+        cov_mu<-cov_mu + Sigma_inv[i,j]*omega2[[s-1]][[k-3]]
       }
     }
     cov_mu <- chol2inv(chol(cov_mu))
@@ -318,8 +317,7 @@ for(s in 2:mcmc_samples){
       }
     }
     omega_scale <- chol2inv(chol(omega_scale + diag(5)))
-    omega_inv <- rwishart(sum(N)+6, omega_scale)
-    omega2[[s]][[k-3]] <- chol2inv(chol(omega_inv))
+    omega2[[s]][[k-3]] <- rwishart(sum(N)+6, omega_scale)
   }
   
   #######
@@ -445,7 +443,7 @@ for(s in 2:mcmc_samples){
   if (zdet==0) zdet <- 1e-20 
   mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][1,])
   denom <- log(zdet) + (-1/2*t(c(t(beta[[4]][[s]]))-mu_vec)%*%
-       kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[1]])))%*%
+       kronecker(chol2inv(col(Sigma_old)), omega2[[s]][[1]])%*%
        (c(t(beta[[4]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long_old == 1) | (D_long == 0 & G_a_long_old == 2) | (D_long == Z_long & G_a_long_old == 3))) +
     dnorm(x = logit_h0_old,
@@ -471,7 +469,7 @@ for(s in 2:mcmc_samples){
   zdet <- det(Sigma[[s]][[1]])
   if (zdet==0) zdet <- 1e-20 
   numer <- log(zdet) + (-1/2*t(c(t(beta[[4]][[s]]))-mu_vec)%*%
-        kronecker(chol2inv(col(Sigma[[s]][[1]])), chol2inv(col(omega2[[s]][[1]])))%*%
+        kronecker(chol2inv(col(Sigma[[s]][[1]])), omega2[[s]][[1]])%*%
         (c(t(beta[[4]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long == 1) | (D_long == 0 & G_a_long == 2) | (D_long == Z_long & G_a_long == 3))) +
     dnorm(x = logit_h0,
@@ -509,7 +507,7 @@ for(s in 2:mcmc_samples){
   if (zdet==0) zdet <- 1e-20 
   mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][2,])
   denom <- log(zdet) + (-1/2*t(c(t(beta[[5]][[s]]))-mu_vec)%*%
-        kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[2]])))%*%
+        kronecker(chol2inv(col(Sigma_old)), omega2[[s]][[2]])%*%
         (c(t(beta[[5]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long_old == 1) | (D_long == 0 & G_a_long_old == 2) | (D_long == Z_long & G_a_long_old == 3))) +
     dnorm(x = logit_l0_old,
@@ -535,7 +533,7 @@ for(s in 2:mcmc_samples){
   zdet <- det(Sigma[[s]][[2]])
   if (zdet==0) zdet <- 1e-20 
   numer <- log(zdet) + (-1/2*t(c(t(beta[[5]][[s]]))-mu_vec)%*%
-        kronecker(chol2inv(col(Sigma[[s]][[2]])), chol2inv(col(omega2[[s]][[2]])))%*%
+        kronecker(chol2inv(col(Sigma[[s]][[2]])), omega2[[s]][[2]])%*%
         (c(t(beta[[5]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long == 1) | (D_long == 0 & G_a_long == 2) | (D_long == Z_long & G_a_long == 3))) +
     dnorm(x = logit_l0,
@@ -573,7 +571,7 @@ for(s in 2:mcmc_samples){
   if (zdet==0) zdet <- 1e-20 
   mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][3,])
   denom <- log(zdet) + (-1/2*t(c(t(beta[[6]][[s]]))-mu_vec)%*%
-        kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[3]])))%*%
+        kronecker(chol2inv(col(Sigma_old)), omega2[[s]][[3]])%*%
         (c(t(beta[[6]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long_old == 1) | (D_long == 0 & G_a_long_old == 2) | (D_long == Z_long & G_a_long_old == 3))) +
     dnorm(x = logit_h1_old,
@@ -599,7 +597,7 @@ for(s in 2:mcmc_samples){
   zdet <- det(Sigma[[s]][[3]])
   if (zdet==0) zdet <- 1e-20 
   numer <- log(zdet) + (-1/2*t(c(t(beta[[6]][[s]]))-mu_vec)%*%
-        kronecker(chol2inv(col(Sigma[[s]][[3]])), chol2inv(col(omega2[[s]][[3]])))%*%
+        kronecker(chol2inv(col(Sigma[[s]][[3]])), omega2[[s]][[3]])%*%
         (c(t(beta[[6]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long == 1) | (D_long == 0 & G_a_long == 2) | (D_long == Z_long & G_a_long == 3))) +
     dnorm(x = logit_h1,
@@ -636,7 +634,7 @@ for(s in 2:mcmc_samples){
   if (zdet==0) zdet <- 1e-20 
   mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][3,])
   denom <- log(zdet) + (-1/2*t(c(t(beta[[6]][[s]]))-mu_vec)%*%
-        kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[3]])))%*%
+        kronecker(chol2inv(col(Sigma_old)), omega2[[s]][[3]])%*%
         (c(t(beta[[6]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long_old == 1) | (D_long == 0 & G_a_long_old == 2) | (D_long == Z_long & G_a_long_old == 3))) +
     dnorm(x = logit_l1_old,
@@ -662,7 +660,7 @@ for(s in 2:mcmc_samples){
   zdet <- det(Sigma[[s]][[3]])
   if (zdet==0) zdet <- 1e-20 
   numer <- log(zdet) + (-1/2*t(c(t(beta[[6]][[s]]))-mu_vec)%*%
-        kronecker(chol2inv(col(Sigma[[s]][[3]])), chol2inv(col(omega2[[s]][[3]])))%*%
+        kronecker(chol2inv(col(Sigma[[s]][[3]])), omega2[[s]][[3]])%*%
         (c(t(beta[[6]][[s]]))-mu_vec)) +
     log(as.numeric((D_long == 1 & G_a_long == 1) | (D_long == 0 & G_a_long == 2) | (D_long == Z_long & G_a_long == 3))) +
     dnorm(x = logit_h1,
@@ -716,7 +714,7 @@ for(s in 2:mcmc_samples){
     if (zdet==0) zdet <- 1e-20 
     mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][k-3,])
     denom <- log(zdet) + (-1/2*t(c(t(beta[[k]][[s]]))-mu_vec)%*%
-                            kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[k-3]])))%*%
+                            kronecker(chol2inv(col(Sigma_old)), omega2[[s]][[k-3]])%*%
                             (c(t(beta[[k]][[s]]))-mu_vec)) + 
       sum(dgamma(chl[[s]][c_k], shape=a_c, scale=b_c, log=TRUE))
     
@@ -743,7 +741,7 @@ for(s in 2:mcmc_samples){
     if (zdet==0) zdet <- 1e-20 
     mu_vec <- kronecker(matrix(1, nrow=sum(N)), mu456[[s]][k-3,])
     numer <- log(zdet) + (-1/2*t(c(t(beta[[k]][[s]]))-mu_vec)%*%
-                            kronecker(chol2inv(col(Sigma_new[[s]][[k-3]])), chol2inv(col(omega2[[s]][[k-3]])))%*%
+                            kronecker(chol2inv(col(Sigma_new[[s]][[k-3]])), omega2[[s]][[k-3]])%*%
                             (c(t(beta[[k]][[s]]))-mu_vec)) +
       sum(dgamma(chl[[s]][c_k], shape=a_c, scale=b_c, log=TRUE))
     
