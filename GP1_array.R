@@ -47,8 +47,8 @@ b_tau2<-0.01
 sigma2_mu<-diag(rep(100^2,5))
 omega_v <- 6
 oemga_n <- diag(rep(1,5))
-a_c <- 1
-b_c <- 1
+a_c <- 10
+b_c <- 10
 
 shape_tau2_update<-sum(N)/2.00 +
   a_tau2
@@ -264,7 +264,7 @@ for(s in 2:mcmc_samples){
   for(k in 1:3) {
     
     Y_k <- Y_long[G_long == k]
-    W_k <- W[(G_long == k),]
+    W_k <- W[(G_long == k),, drop=FALSE]
     
     cov_beta <- chol2inv(chol(crossprod(W_k)/sigma2[[s-1]][k] + diag(5)/sigma2_beta))
     mu_beta <- cov_beta%*%(crossprod(W_k, Y_k))/sigma2[[s-1]][k]
@@ -278,7 +278,7 @@ for(s in 2:mcmc_samples){
   
   for(k in 4:6) {
     Y_k <- Y_long[G_long == k]
-    W_k <- W[(G_long == k),]
+    W_k <- W[(G_long == k), ,drop=FALSE]
     
     omega_inv <- chol2inv(chol(omega2[[s-1]][[k-3]]))
     Sigma_inv <- chol2inv(chol(Sigma[[s-1]][[k-3]]))
@@ -718,7 +718,7 @@ for(s in 2:mcmc_samples){
     denom <- log(zdet) + (-1/2*t(c(t(beta[[k]][[s]]))-mu_vec)%*%
                             kronecker(chol2inv(col(Sigma_old)), chol2inv(col(omega2[[s]][[k-3]])))%*%
                             (c(t(beta[[k]][[s]]))-mu_vec)) + 
-      sum(dgamma(chl[[s]][c_k], shape=1, scale=1, log=TRUE))
+      sum(dgamma(chl[[s]][c_k], shape=a_c, scale=b_c, log=TRUE))
     
     lchl <- log(chl[[s-1]][c_k])
     lchl_new <- rnorm(1, mean=lchl, sd=metrop_sd_c[c_k])
@@ -745,7 +745,7 @@ for(s in 2:mcmc_samples){
     numer <- log(zdet) + (-1/2*t(c(t(beta[[k]][[s]]))-mu_vec)%*%
                             kronecker(chol2inv(col(Sigma_new[[s]][[k-3]])), chol2inv(col(omega2[[s]][[k-3]])))%*%
                             (c(t(beta[[k]][[s]]))-mu_vec)) +
-      sum(dgamma(chl[[s]][c_k], shape=1, scale=1, log=TRUE))
+      sum(dgamma(chl[[s]][c_k], shape=a_c, scale=b_c, log=TRUE))
     
     accept <- 1
     ratio <- exp(numer - denom)
@@ -823,103 +823,103 @@ for(s in 2:mcmc_samples){
   ##########
   #Estimands
   ##########
-  if (s %in% iters) {
-    Y1 <- rep(NA, sum(N))
-    Y0 <- rep(NA, sum(N))
-    Y0p <- rep(NA, sum(N))
-    C <- rep(NA, sum(N))
-    
-    eff.a <- 0.8
-    eff.s <- 0.4
-    eff.sp <- 0.8
-    ij <- 0
-    for (j in 1:J) {
-      for (i in 1:N[J]) {
-        ij <- ij + 1
-        ## Need to figure out G(eff.a)
-        if (G[[s]][j,i] %in% 1:3) {
-          G.eff.a <- G[[s]][j,i]
-        }  else if (G[[s]][j,i]==4) {
-          if (eff.a < h0[[s]][ij]) {
-            G.eff.a <- 2
-          } else {
-            G.eff.a <- 3
-          }
-        } else if (G[[s]][j,i]==5) {
-          if (eff.a < l0[[s]][ij]) {
-            G.eff.a <- 3
-          } else {
-            G.eff.a <- 1
-          }
-        } else if (G[[s]][j,i]==6) {
-          if (eff.a < h1[[s]][ij]) {
-            G.eff.a <- 2
-          } else if (eff.a < l1[[s]][ij]) {
-            G.eff.a <- 3
-          } else {
-            G.eff.a <- 1
-          }
-        }
-        
-        if (G.eff.a == 3) {
-          C[ij] <- 1
-        } else {
-          C[ij] <- 0
-        }
-        
-        if (k %in% 1:3) {
-          beta_k <- beta[[k]][[s]]
-        } else if (k %in% 4:6) {
-          beta_k <- beta[[k]][[s]]
-        }
-        
-        W0p <- W0 <- W1 <- W[ij,]
-        W0[3] <- W1[3] <- eff.s
-        W0p[3] <- eff.sp
-        W0p[4] <- W0[4] <- W1[4] <- eff.a
-        W0p[5] <- W0[5] <- 0
-        W1[5] <- 1
-        mu0<-W0%*%t(beta_k)
-        var0<-sigma2[[s]][G.eff.a]
-        Y0[ij]<-rnorm(n = 1,
-                      mean = mu0,
-                      sd = sqrt(var0)) 
-        mu1<-W1%*%t(beta_k)
-        var1<-sigma2[[s]][G.eff.a]
-        Y1[ij]<-rnorm(n = 1,
-                      mean = mu1,
-                      sd = sqrt(var1))
-        
-        mu0p<-W0p%*%t(beta_k) 
-        var0p<-sigma2[[s]][G.eff.a]
-        Y0p[ij]<-rnorm(n = 1,
-                       mean = mu0p,
-                       sd = sqrt(var0p))        
-      }
-    }
-    CADE[s] <- sum(C*(Y1-Y0))/sum(C)
-    CASE[s] <- sum(C*(Y0-Y0p))/sum(C)
-  }
+  # if (s %in% iters) {
+  #   Y1 <- rep(NA, sum(N))
+  #   Y0 <- rep(NA, sum(N))
+  #   Y0p <- rep(NA, sum(N))
+  #   C <- rep(NA, sum(N))
+  #   
+  #   eff.a <- 0.8
+  #   eff.s <- 0.4
+  #   eff.sp <- 0.8
+  #   ij <- 0
+  #   for (j in 1:J) {
+  #     for (i in 1:N[J]) {
+  #       ij <- ij + 1
+  #       ## Need to figure out G(eff.a)
+  #       if (G[[s]][j,i] %in% 1:3) {
+  #         G.eff.a <- G[[s]][j,i]
+  #       }  else if (G[[s]][j,i]==4) {
+  #         if (eff.a < h0[[s]][ij]) {
+  #           G.eff.a <- 2
+  #         } else {
+  #           G.eff.a <- 3
+  #         }
+  #       } else if (G[[s]][j,i]==5) {
+  #         if (eff.a < l0[[s]][ij]) {
+  #           G.eff.a <- 3
+  #         } else {
+  #           G.eff.a <- 1
+  #         }
+  #       } else if (G[[s]][j,i]==6) {
+  #         if (eff.a < h1[[s]][ij]) {
+  #           G.eff.a <- 2
+  #         } else if (eff.a < l1[[s]][ij]) {
+  #           G.eff.a <- 3
+  #         } else {
+  #           G.eff.a <- 1
+  #         }
+  #       }
+  #       
+  #       if (G.eff.a == 3) {
+  #         C[ij] <- 1
+  #       } else {
+  #         C[ij] <- 0
+  #       }
+  #       
+  #       if (k %in% 1:3) {
+  #         beta_k <- beta[[k]][[s]]
+  #       } else if (k %in% 4:6) {
+  #         beta_k <- beta[[k]][[s]][ij,]
+  #       }
+  #       
+  #       W0p <- W0 <- W1 <- W[ij,]
+  #       W0[3] <- W1[3] <- eff.s
+  #       W0p[3] <- eff.sp
+  #       W0p[4] <- W0[4] <- W1[4] <- eff.a
+  #       W0p[5] <- W0[5] <- 0
+  #       W1[5] <- 1
+  #       mu0<-W0%*%beta_k
+  #       var0<-sigma2[[s]][G.eff.a]
+  #       Y0[ij]<-rnorm(n = 1,
+  #                     mean = mu0,
+  #                     sd = sqrt(var0)) 
+  #       mu1<-W1%*%beta_k
+  #       var1<-sigma2[[s]][G.eff.a]
+  #       Y1[ij]<-rnorm(n = 1,
+  #                     mean = mu1,
+  #                     sd = sqrt(var1))
+  #       
+  #       mu0p<-W0p%*%beta_k
+  #       var0p<-sigma2[[s]][G.eff.a]
+  #       Y0p[ij]<-rnorm(n = 1,
+  #                      mean = mu0p,
+  #                      sd = sqrt(var0p))        
+  #     }
+  #   }
+  #   CADE[s] <- sum(C*(Y1-Y0))/sum(C)
+  #   CASE[s] <- sum(C*(Y0-Y0p))/sum(C)
+  # }
 }
-saveRDS(beta, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/beta",
+saveRDS(beta, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/beta",
                       id, ".rds"))
-saveRDS(sigma2, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/sig2",
+saveRDS(sigma2, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/sig2",
                      id, ".rds"))
-saveRDS(omega2, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/omega2",
+saveRDS(omega2, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/omega2",
                        id, ".rds"))
-saveRDS(mu456, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/mu",
+saveRDS(mu456, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/mu",
                    id, ".rds"))
-saveRDS(G, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/G",
+saveRDS(G, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/G",
                   id, ".rds"))
-saveRDS(chl, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/c",
+saveRDS(chl, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/c",
                   id, ".rds"))
-saveRDS(logit_h0, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/h4",
+saveRDS(h0, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/h4",
                          id, ".rds"))
-saveRDS(logit_l0, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/l5",
+saveRDS(l0, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/l5",
                          id, ".rds"))
-saveRDS(logit_h1, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/h6",
+saveRDS(h1, paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/h6",
                          id, ".rds"))
-saveRDS(logit_l1,paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.6/l6",
+saveRDS(l1,paste0("/home/cim24/project/OhnishiExtension/Results/GP1_5.19/l6",
                         id, ".rds"))
 
 

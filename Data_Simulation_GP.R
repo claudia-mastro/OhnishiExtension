@@ -2,6 +2,7 @@
 #Seed
 ##############
 set.seed(id)
+source("~/project/OhnishiExtension/JWCode/effects_GP1.R")
 
 ################
 #Global Settings
@@ -169,14 +170,14 @@ omega_true <- rWishart(3, 6, solve(diag(5)))
 
 for(k in 1:3){
   
-  beta_true[[k]]<-rnorm(n = 5)
+  beta_true[[k]]<-c(rnorm(n = 4), rnorm(n=1, mean=1.2, sd=0.2))
   sigma2_true[k]<-runif(n = 1,
                         min = 0.00,
                         max = 0.10)
   
 }
 
-mu456 <- rmnorm(3, mean=c(0,0,0,0,0), varcov=diag(5))
+mu456 <- rmnorm(3, mean=c(0,0,0,0,1.2), varcov=diag(5)/5)
 
 for(k in 4:6) {
   
@@ -245,116 +246,124 @@ for(j in 2:J){
    Y[[j]]<-Y_long[(1 + sum(N[1:(j-1)])):sum(N[1:j])]
    }
 
-Y0_long <- rep(NA, sum(N))
-Y0p_long <- rep(NA, sum(N))
-Y1_long <- rep(NA, sum(N))
-C <- rep(NA, sum(N))
-CADE.G <- rep(NA, sum(N))
-eff.a <- 0.8
-eff.s <- 0.4
-eff.sp <- 0.8
-
-for(j in 1:sum(N)) {
-  if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
-    CADE.G[j] <- 3
-    if (Z_long[j] == 0) {
-      Y0_long[j] <- Y_long[j]
-      W1 <- W[j, ]
-      W1[3] <- eff.s
-      W1[4] <- eff.a
-      W1[5] <- 1
-      mu <- W1 %*% t(beta_true[[G_long_true[j]]])
-      var <- sigma2_true[G_long_true[j]]
-      Y1_long[j] <- rnorm(n = 1,
-                          mean = mu,
-                          sd = sqrt(var))
-      W0p <- W[j, ]
-      W0p[3] <- eff.sp
-      W0p[4] <- eff.a
-      W0p[5] <- 0
-      mu0p <- W0p %*% t(beta_true[[G_long_true[j]]])
-      var0p <- sigma2_true[G_long_true[j]]
-      Y0p_long[j] <- rnorm(n = 1,
-                          mean = mu0p,
-                          sd = sqrt(var0p))
-    } else {
-      Y1_long[j] <- Y_long[j]
-      W0 <- W[j, ]
-      W0[3] <- eff.s
-      W0[4] <- eff.a
-      W0[5] <- 0
-      mu <- W0 %*% t(beta_true[[G_long_true[j]]])
-      var <- sigma2_true[G_long_true[j]]
-      Y0_long[j] <- rnorm(n = 1,
-                          mean = mu,
-                          sd = sqrt(var))
-      W0p <- W[j, ]
-      W0p[3] <- eff.s
-      W0p[4] <- eff.a
-      W0p[5] <- 0
-      mu0p <- W0p %*% t(beta_true[[G_long_true[j]]])
-      var0p <- sigma2_true[G_long_true[j]]
-      Y0p_long[j] <- rnorm(n = 1,
-                           mean = mu0p,
-                           sd = sqrt(var0p))
-    }
-  } else {
-    if (G_a_long_true[j] %in% 1:3) {
-      CADE.G[j] <- G_a_long_true[j]
-    }  else if (G_a_long_true[j] == 4) {
-      if (eff.a < h0[j]) {
-        CADE.G[j] <- 2
-      } else {
-        CADE.G[j] <- 3
-      }
-    } else if (G_a_long_true[j] == 5) {
-      if (eff.a < l0[j]) {
-        CADE.G[j] <- 3
-      } else {
-        CADE.G[j] <- 1
-      }
-    } else if (G_a_long_true[j] == 6) {
-      if (eff.a < h1[j]) {
-        CADE.G[j] <- 2
-      } else if (eff.a < l1[j]) {
-        CADE.G[j] <- 3
-      } else {
-        CADE.G[j] <- 1
-      }
-    }
-    
-    if (CADE.G[j] == 3) {
-      C[j] <- 1
-    } else {
-      C[j] <- 0
-    }
-  }
-  W0 <- W0p <- W1 <- W[j, ]
-  W0[3] <- W1[3] <- eff.s
-  W0p[3] <- eff.sp
-  W0[4] <- W0p[4] <- W1[4] <- eff.a
-  W0[5] <- W0p[5] <- 0
-  W1[5] <- 1
-  mu0 <- W0 %*% t(beta_true[[G_long_true[j]]])
-  var0 <- sigma2_true[G_long_true[j]]
-  Y0_long[j] <- rnorm(n = 1,
-                      mean = mu0,
-                      sd = sqrt(var0))
-  mu1 <- W1 %*% t(beta_true[[G_long_true[j]]])
-  var1 <- sigma2_true[G_long_true[j]]
-  Y1_long[j] <- rnorm(n = 1,
-                      mean = mu1,
-                      sd = sqrt(var1))
-  mu0p <- W0p %*% t(beta_true[[G_long_true[j]]])
-  var0p <- sigma2_true[G_long_true[j]]
-  Y0p_long[j] <- rnorm(n = 1,
-                      mean = mu0p,
-                      sd = sqrt(var0p))
-}
-
-CADE.true <- sum((CADE.G==3)*(Y1_long - Y0_long))/(sum(CADE.G==3))
-CASE.true <- sum((CADE.G==3)*(Y0_long - Y0p_long))/(sum(CADE.G==3))
-
+# Y0_long <- rep(NA, sum(N))
+# Y0p_long <- rep(NA, sum(N))
+# Y1_long <- rep(NA, sum(N))
+# C <- rep(NA, sum(N))
+# CADE.G <- rep(NA, sum(N))
+# eff.a <- 0.8
+# eff.s <- 0.4
+# eff.sp <- 0.8
+# 
+# for(j in 1:sum(N)) {
+#   if (G_long_true[j] %in% 1:3) {
+#     beta_j<-beta_true[[G_long_true[j]]]
+#   } else if (G_long_true[j] %in% 4:6) {
+#     beta_j<-beta_true[[G_long_true[j]]][j,]
+#   }
+#   if (a_long[j] == eff.a & S_long[j] == eff.s & G_a_long_true[j] == 3) {
+#     CADE.G[j] <- 3
+#     if (Z_long[j] == 0) {
+#       Y0_long[j] <- Y_long[j]
+#       W1 <- W[j, ]
+#       W1[3] <- eff.s
+#       W1[4] <- eff.a
+#       W1[5] <- 1
+#       mu <- W1 %*% t(beta_j)
+#       var <- sigma2_true[G_long_true[j]]
+#       Y1_long[j] <- rnorm(n = 1,
+#                           mean = mu,
+#                           sd = sqrt(var))
+#       W0p <- W[j, ]
+#       W0p[3] <- eff.sp
+#       W0p[4] <- eff.a
+#       W0p[5] <- 0
+#       mu0p <- W0p %*% t(beta_j)
+#       var0p <- sigma2_true[G_long_true[j]]
+#       Y0p_long[j] <- rnorm(n = 1,
+#                           mean = mu0p,
+#                           sd = sqrt(var0p))
+#     } else {
+#       Y1_long[j] <- Y_long[j]
+#       W0 <- W[j, ]
+#       W0[3] <- eff.s
+#       W0[4] <- eff.a
+#       W0[5] <- 0
+#       mu <- W0 %*% t(beta_j)
+#       var <- sigma2_true[G_long_true[j]]
+#       Y0_long[j] <- rnorm(n = 1,
+#                           mean = mu,
+#                           sd = sqrt(var))
+#       W0p <- W[j, ]
+#       W0p[3] <- eff.s
+#       W0p[4] <- eff.a
+#       W0p[5] <- 0
+#       mu0p <- W0p %*% t(beta_j)
+#       var0p <- sigma2_true[G_long_true[j]]
+#       Y0p_long[j] <- rnorm(n = 1,
+#                            mean = mu0p,
+#                            sd = sqrt(var0p))
+#     }
+#   } else {
+#     if (G_a_long_true[j] %in% 1:3) {
+#       CADE.G[j] <- G_a_long_true[j]
+#     }  else if (G_a_long_true[j] == 4) {
+#       if (eff.a < h0[j]) {
+#         CADE.G[j] <- 2
+#       } else {
+#         CADE.G[j] <- 3
+#       }
+#     } else if (G_a_long_true[j] == 5) {
+#       if (eff.a < l0[j]) {
+#         CADE.G[j] <- 3
+#       } else {
+#         CADE.G[j] <- 1
+#       }
+#     } else if (G_a_long_true[j] == 6) {
+#       if (eff.a < h1[j]) {
+#         CADE.G[j] <- 2
+#       } else if (eff.a < l1[j]) {
+#         CADE.G[j] <- 3
+#       } else {
+#         CADE.G[j] <- 1
+#       }
+#     }
+#     
+#     if (CADE.G[j] == 3) {
+#       C[j] <- 1
+#     } else {
+#       C[j] <- 0
+#     }
+#   }
+#   W0 <- W0p <- W1 <- W[j, ]
+#   W0[3] <- W1[3] <- eff.s
+#   W0p[3] <- eff.sp
+#   W0[4] <- W0p[4] <- W1[4] <- eff.a
+#   W0[5] <- W0p[5] <- 0
+#   W1[5] <- 1
+#   mu0 <- W0 %*% t(beta_j)
+#   var0 <- sigma2_true[G_long_true[j]]
+#   Y0_long[j] <- rnorm(n = 1,
+#                       mean = mu0,
+#                       sd = sqrt(var0))
+#   mu1 <- W1 %*% t(beta_j)
+#   var1 <- sigma2_true[G_long_true[j]]
+#   Y1_long[j] <- rnorm(n = 1,
+#                       mean = mu1,
+#                       sd = sqrt(var1))
+#   mu0p <- W0p %*% t(beta_j)
+#   var0p <- sigma2_true[G_long_true[j]]
+#   Y0p_long[j] <- rnorm(n = 1,
+#                       mean = mu0p,
+#                       sd = sqrt(var0p))
+# }
+# 
+# CADE.true <- sum((CADE.G==3)*(Y1_long - Y0_long))/(sum(CADE.G==3))
+# CASE.true <- sum((CADE.G==3)*(Y0_long - Y0p_long))/(sum(CADE.G==3))
+eff <- CADE.CASE(0.8, 0.4, 0.8, 0, G_long_true, h0_true, l0_true, h1_true, l1_true, 
+          beta_true, sigma2_true)
+CADE.true <- eff[[1]]
+CASE.true <- eff[[2]]
 
 
 
